@@ -10,4 +10,13 @@
 #if defined(ARDUINO) && ARDUINO >= 100
   #include "Arduino.h"
 
-#endif
+class MagicalLiopleurodon
+{
+  public:
+    MagicalLiopleurodon();
+    void updateAesKey(int8_t[] key);
+  
+};
+
+#endif //MagicalLiopleurodon_h
+
