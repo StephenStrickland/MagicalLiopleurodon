@@ -7,7 +7,7 @@ import os
 class MLApiServer:
     app = Bottle()
     def __init__(self, port):
-
+        self.something = 'hello world'
         self.port = 8080
         if port > 0:
             self.port = port

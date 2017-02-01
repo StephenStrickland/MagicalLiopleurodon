@@ -17,6 +17,12 @@ server.start()
 #spin up ui thread
 
 
+
+def foo():
+    #do something here
+    print('from foo')
+
+
 #
 #
 #
