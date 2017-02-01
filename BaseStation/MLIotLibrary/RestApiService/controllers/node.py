@@ -22,4 +22,16 @@ def create_node(id):
 def send_command_to_node(id):
     return {}
 
+##node telemetry
+
+@app.get('/api/nodes/:id/telemetry/')
+def get_all_telemetry_for_node(id):
+    return NotImplementedError()
+
+
+@app.get('/api/nodes/:id/telemetry/:telemId')
+def get_all_telemetry_for_node(id, telemId):
+    return NotImplementedError()
+
+
 

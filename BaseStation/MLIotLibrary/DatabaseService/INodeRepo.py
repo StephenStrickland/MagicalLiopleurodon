@@ -5,3 +5,9 @@ class INodeRepo:
         raise NotImplementedError()
     def save_node(self, node):
         raise NotImplementedError()
+    def delete_node(self, node):
+        raise NotImplementedError()
+
+    #simply marks node as inactive
+    def archive_node(self, node):
+        raise NotImplementedError()

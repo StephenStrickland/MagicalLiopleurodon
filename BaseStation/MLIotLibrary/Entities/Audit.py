@@ -8,3 +8,4 @@ class Audit:
         self.CreateUser = ''
         self.ModDate = datetime.utc()
         self.ModUser = ''
+        self.IsInactive = False
