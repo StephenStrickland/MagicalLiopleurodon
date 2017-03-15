@@ -16,6 +16,6 @@ def server_static(path):
 def scripts_static(file):
     return static_file(file, root='MLIotLibrary/RestApiService/app/')
 
-@app.route('/ngviews/<templatePath>')
+@app.route('/ngviews/<templatePath:path>')
 def views_static(templatePath):
     return static_file(templatePath + '.html', root='MLIotLibrary/RestApiService/app/')

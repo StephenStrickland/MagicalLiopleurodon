@@ -10,5 +10,3 @@ def index():
 
 def _getAngularFileNames():
     return [ '/ngscripts/' + x[32:] for x in glob.glob('MLIotLibrary/RestApiService/app/**/*.js', recursive=True)]
-
-print(_getAngularFileNames())

@@ -6,10 +6,10 @@
  * @description
  * # adminPosHeader
  */
-angular.module('sbAdminApp')
+angular.module('lio')
 	.directive('timeline',function() {
     return {
-        templateUrl:'scripts/directives/timeline/timeline.html',
+        templateUrl:'ngviews/shared/timeline/timeline',
         restrict: 'E',
         replace: true,
     }

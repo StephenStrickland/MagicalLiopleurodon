@@ -7,10 +7,10 @@
  * # adminPosHeader
  */
 
-angular.module('sbAdminApp')
+angular.module('lio')
   .directive('sidebar',['$location',function() {
     return {
-      templateUrl:'scripts/directives/sidebar/sidebar.html',
+      templateUrl:'ngviews/shared/nav/sidebar',
       restrict: 'E',
       replace: true,
       scope: {

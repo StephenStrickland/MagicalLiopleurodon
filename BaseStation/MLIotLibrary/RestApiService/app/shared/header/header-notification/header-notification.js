@@ -6,10 +6,10 @@
  * @description
  * # adminPosHeader
  */
-angular.module('sbAdminApp')
+angular.module('lio')
 	.directive('headerNotification',function(){
 		return {
-        templateUrl:'scripts/directives/header/header-notification/header-notification.html',
+        templateUrl:'ngviews/shared/header/header-notification/header-notification',
         restrict: 'E',
         replace: true,
     	}

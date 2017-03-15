@@ -6,6 +6,6 @@
  * # MainCtrl
  * Controller of the sbAdminApp
  */
-angular.module('sbAdminApp')
+angular.module('lio')
   .controller('MainCtrl', function($scope,$position) {
   });

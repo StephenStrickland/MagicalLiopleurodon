@@ -1,22 +1,29 @@
-__author__ = 'Stephen'
+__author__ = 'Stephen Strickland'
 from MLIotLibrary.RestApiService import app
+from bottle import request
+from MLIotLibrary.Shared.Services.NodeService import NodeService
+from bson.json_util import dumps
+from MLIotLibrary.Shared.Services.AuthService import authentication_wrapper as authenticate
 
 
 @app.get('/api/nodes')
 def get_all_nodes():
-    return [{'id':0}, {'id':1},{'id':2}]
+    return dumps(NodeService().get_all_nodes())
+
+
 
 @app.get('/api/nodes/:id')
 def get_node_by_id(id):
-    return {'id':int(id)}
+    print(request.url_args, 'args')
+    return dumps(NodeService().get_node_by_id(id))
 
 @app.put('/api/nodes/:id')
-def get_node_by_id(id):
-    return {'id':'1234'}
+def update_node_by_id(id):
+    return {'success': True}
 
-@app.post('/api/nodes/:id')
-def create_node(id):
-    return {}
+@app.post('/api/nodes')
+def create_node():
+    return NodeService().save_node(request.json)
 
 @app.post('/api/nodes/:id/cmd')
 def send_command_to_node(id):
