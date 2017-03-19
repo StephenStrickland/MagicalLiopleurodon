@@ -4,8 +4,8 @@ __author__ = 'Stephen'
 
 class Audit:
     def __init__(self):
-        self.CreateDate = datetime.utc()
+        self.CreateDate = datetime.datetime.utc()
         self.CreateUser = ''
-        self.ModDate = datetime.utc()
+        self.ModDate = datetime.datetime.utc()
         self.ModUser = ''
         self.IsActive = True

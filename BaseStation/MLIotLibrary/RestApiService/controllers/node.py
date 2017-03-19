@@ -4,6 +4,12 @@ from bottle import request
 from MLIotLibrary.Shared.Services.NodeService import NodeService
 from bson.json_util import dumps
 from MLIotLibrary.Shared.Services.AuthService import authentication_wrapper as authenticate
+from MLIotLibrary.Shared.Entities.NodeTelemetry import NodeTelemetry
+from pymongo import MongoClient
+
+client = MongoClient('mongodb://localhost:27017/')
+db = client.Lio
+telemCollection = db.telemetry
 
 
 @app.get('/api/nodes')
@@ -33,7 +39,7 @@ def send_command_to_node(id):
 
 @app.get('/api/nodes/:id/telemetry/')
 def get_all_telemetry_for_node(id):
-    return NotImplementedError()
+    return dumps(telemCollection.find())
 
 
 @app.get('/api/nodes/:id/telemetry/:telemId')

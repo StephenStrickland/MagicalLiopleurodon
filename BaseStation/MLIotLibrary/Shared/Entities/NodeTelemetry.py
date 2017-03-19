@@ -7,5 +7,5 @@ class NodeTelemetry:
     def __init__(self):
         self.Id = ''
         self.NodeId = ''
-        self.Audit = Audit
+       # self.Audit = Audit
         self.Data = {}

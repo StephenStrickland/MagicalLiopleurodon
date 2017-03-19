@@ -1,4 +1,5 @@
 <div>
+
     <div class="row">
         <div class="row">
             <div class="col-lg-12">
@@ -20,15 +21,102 @@
                     <thead>
                         <tr>
                             <th>Name</th>
+                            <th>Id</th>
+                            <th>Description</th>
+                            <th>Group</th>
+                            <th>Location</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="node in vm.nodes">
+                        <tr ng-repeat="node in vm.filtered">
                             <td>{{node.Name}}</td>
+                            <td>{{$index}}</td>
+                            <td>Some Description</td>
+                            <td>Group Name Here</td>
+                            <td>GPS Coordinates</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
+        </div>
+        <div class="row">
+
+            <canvas id="myChart" width="200" height="200"></canvas>
+            <script>
+                var dateFromObjectId = function (objectId) {
+                    return new Date(parseInt(objectId.substring(0, 8), 16) * 1000);
+                };
+                var data = [];
+                jQuery.ajax({
+                    url: '/api/nodes/1/telemetry/',
+                    success: function (result) {
+                        if (result.isOk == false) {
+                            alert(result.message);
+
+                        }
+
+                        data = JSON.parse(result);
+                        console.log(data);
+                        data.forEach(function(item){
+                           console.log(dateFromObjectId(item._id.$oid));
+                        });
+                        var d = new Date();
+                        console.log('date',d);
+                        d.setMinutes(d.getMinutes()-10);
+                        console.log('datem',d);
+                        var filtered = _.filter(data, function(item){
+                            var itemDate = dateFromObjectId(item._id.$oid);
+                            if(itemDate >= d)
+                            {
+                                item.date = itemDate;
+                                return true;
+                            }
+                            return false;
+                        });
+                        console.log(filtered.length);
+
+                        var ctx = document.getElementById("myChart");
+                        var myChart = new Chart(ctx, {
+                            type: 'line',
+                            data: {
+                                labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+                                datasets: [{
+                                    label: '# of Votes',
+                                    data: [12, 19, 3, 5, 2, 3],
+                                    backgroundColor: [
+                                        'rgba(255, 99, 132, 0.2)',
+                                        'rgba(54, 162, 235, 0.2)',
+                                        'rgba(255, 206, 86, 0.2)',
+                                        'rgba(75, 192, 192, 0.2)',
+                                        'rgba(153, 102, 255, 0.2)',
+                                        'rgba(255, 159, 64, 0.2)'
+                                    ],
+                                    borderColor: [
+                                        'rgba(255,99,132,1)',
+                                        'rgba(54, 162, 235, 1)',
+                                        'rgba(255, 206, 86, 1)',
+                                        'rgba(75, 192, 192, 1)',
+                                        'rgba(153, 102, 255, 1)',
+                                        'rgba(255, 159, 64, 1)'
+                                    ],
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                scales: {
+                                    yAxes: [{
+                                        ticks: {
+                                            beginAtZero:true
+                                        }
+                                    }]
+                                }
+                            }
+                        });
+                    }
+
+                });
+
+            </script>
         </div>
         <!-- /.col-lg-12 -->
     </div>

@@ -13,7 +13,8 @@
 
     function nodeListController($scope, nodeFactory) {
     	var vm = this;
-    	vm.nodes = []
+    	vm.nodes = [];
+    	vm.filtered = [];
 
 
 
@@ -21,9 +22,18 @@
         nodeFactory.getAllNodes()
         .success(function(result){
             vm.nodes = result.data.data;
+            vm.filtered = vm.nodes;
+            vm.filterNodes('');
         })
         .error(function(result){})
 
+
+        vm.filterNodes = function (text) {
+            if(text)
+                vm.filtered = _.filter(vm.nodes, function(item){return item.Name.substring(text) > -1})
+            else
+                vm.filtered = vm.nodes;
+        }
     }
 
 })();

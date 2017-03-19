@@ -177,7 +177,7 @@ angular
               name:'lio',
               files:[
               'ngscripts/components/groups/group.factory.js',
-              'ngscripts/components/groups/node.list.ctl.js'
+              'ngscripts/components/groups/group.list.ctl.js'
 
               ],
               serie: true

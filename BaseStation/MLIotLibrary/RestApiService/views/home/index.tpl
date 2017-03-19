@@ -34,7 +34,7 @@
     <script src="libs/angular-loading-bar/build/loading-bar.min.js"></script>
     <script src="libs/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
     <script src="libs/metisMenu/dist/metisMenu.min.js"></script>
-    <script src="libs/Chart.js/Chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.bundle.min.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
 

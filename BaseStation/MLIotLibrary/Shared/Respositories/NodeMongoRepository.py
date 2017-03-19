@@ -5,6 +5,8 @@ from pymongo import MongoClient
 from bson.objectid import ObjectId
 import configparser
 from bson.json_util import dumps
+from mongoengine import  connect
+from MLIotLibrary.Shared.Schema.Node import MNode
 
 
 class NodeMongoRepository(INodeRepo):
@@ -12,10 +14,11 @@ class NodeMongoRepository(INodeRepo):
         config = configparser.ConfigParser()
         config.read('lio.config')
         self.ConnectionString = config['database']['MongoConnectionString']
-        self.NodeCollection = MongoClient(self.ConnectionString).Lio.Nodes
+
+        connect('Lio', host=self.ConnectionString)
 
     def get_all_nodes(self):
-        return self.NodeCollection.find()
+        return MNode.objects()
 
     def get_node_by_id(self, id):
         print(id)
