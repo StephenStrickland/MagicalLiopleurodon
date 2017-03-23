@@ -1,0 +1,15 @@
+
+
+class Message:
+    def __init__(self, dataIv, dataString, dataSignedHash, senderId, nonce):
+        self.iv=dataIv
+        self.data=dataString
+        self.signature=dataSignedHash
+        self.sender=senderId
+        self.nonce=nonce
+
+    def validate(self):
+        return True
+        
+
+
