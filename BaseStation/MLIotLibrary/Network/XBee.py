@@ -1,5 +1,7 @@
 __author__ = 'Stephen Strickland'
 
+from ..Shared.Schema.Node import *
+
 from MLIotLibrary.Shared.Services.NodeService import NodeService
 class XBeeCommService:
     def __init__(self):
@@ -15,7 +17,7 @@ class XBeeCommService:
             bool: True for successful message send, False otherwise.
 
         """
-        node = self.service.
+        node = get_node_by_address(addr)
 
 
 
@@ -29,3 +31,4 @@ class XBeeCommService:
             bool: True for successful message send, False otherwise.
 
         """
+        return None

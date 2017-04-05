@@ -36,3 +36,10 @@ def get_node_by_id(id):
     elif Config.useSql:
         return None
 
+
+def get_node_by_address(addr):
+    if Config.useMongo:
+        return MNode.objects(NetworkAddress=addr)[0]
+    elif Config.useSql:
+        return None
+
