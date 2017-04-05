@@ -18,6 +18,9 @@ class NodeService:
     def get_node_by_id(self, id):
         return self.db.get_node_by_id(id)
 
+    def get_node_by_network_address(self, address):
+        return self.db.get_node_by_network_address(address)
+
     def archive_node(self, id):
         return self.db.archive_node(id)
 

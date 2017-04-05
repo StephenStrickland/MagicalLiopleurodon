@@ -24,6 +24,10 @@ class NodeMongoRepository(INodeRepo):
         print(id)
         return self.NodeCollection.find_one({'_id': ObjectId(id)})
 
+    def get_node_by_network_address(self, addr):
+        return MNode.objects(NetworkAddress=addr);
+
+
     def archive_node(self, node):
         self.NodeCollection.update({'_id': id}, {'$set': {'Audit.IsActive': False}})
         return True
