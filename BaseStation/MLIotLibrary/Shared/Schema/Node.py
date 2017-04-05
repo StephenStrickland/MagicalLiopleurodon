@@ -10,13 +10,15 @@ Base = declarative_base()
 class MNode(Document):
     HostId = ObjectIdField(required=True)
     Audit = EmbeddedDocumentField(Audit)
+    NodeType = IntField(required=True, default=1)
     Name = StringField(required=True)
     Location = StringField()
     GpsCoordinates = PointField()
    # OptionalPrivateKey =
     Group = EmbeddedDocumentField(Group)
     LastHeartbeat = DateTimeField()
-    Address = IntField(required=True)
+    NetworkAddress = IntField(required=True)
+    IpAddress = StringField(required=True)
 
 #SQL sqlalchemy schema
 class SNode(Base):

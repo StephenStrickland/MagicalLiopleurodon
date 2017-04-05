@@ -10,6 +10,16 @@ class Message:
 
     def validate(self):
         return True
+
+    def getDict(self):
+        return {
+            'i': self.iv,
+            'd': self.data,
+            'sg': self.signature,
+            's': self.sender,
+            'n': self.nonce
+
+        }
         
 
 
