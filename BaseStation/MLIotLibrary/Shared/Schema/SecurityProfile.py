@@ -13,6 +13,7 @@ class MSecurityProfile(Document):
         NetworkIndex = IntField(required=True, default=0)
         MessageKeys = ListField(StringField())
         MessageIndex = IntField(required=True, default=0)
+        PreviousMessageIndex = IntField(required=True, default=0)
         PublicKey = StringField(required=False)
         PrivateKey = StringField(required=False)
         RSAEnabled = BooleanField(required=False, default=False)
