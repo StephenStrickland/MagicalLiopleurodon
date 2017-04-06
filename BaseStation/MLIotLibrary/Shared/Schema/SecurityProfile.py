@@ -17,3 +17,7 @@ class MSecurityProfile(Document):
         PrivateKey = StringField(required=False)
         RSAEnabled = BooleanField(required=False, default=False)
         CurrentNonce = IntField(required=False)
+
+
+def get_security_profile_by_parent_id(id):
+    return MSecurityProfile.objects(id=id).first()
