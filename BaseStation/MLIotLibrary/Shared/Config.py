@@ -7,8 +7,8 @@ class Config:
     def __init__(self):
         config = configparser.ConfigParser()
         config.read('lio.config')
-        self.baudRate = int(config['radio']['BaudRate'])
-        self.radioUsbPort = config['radio']['UsbPort']
+        self.baudRate = int(config['serial']['BaudRate'])
+        self.radioUsbPort = config['serial']['UsbPort']
         self.port = int(config['api']['Port'])
         self.enableApi = bool(config['api']['EnableApi'])
         self.logMode = int(config['logging']['LogMode'])

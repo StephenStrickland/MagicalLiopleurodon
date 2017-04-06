@@ -22,6 +22,7 @@ class XBeeCommService:
 
 
 
+
     def broadCastMessage(self, data):
         """ Broadcasts a message to every node within the network, regardless of communication method (802.15.4, MQTT,...)
         Args:

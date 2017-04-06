@@ -6,12 +6,21 @@ from MLIotLibrary.MLServer import MLServer
 from MLIotLibrary.Shared.Entities.NodeTelemetry import NodeTelemetry
 from pymongo import MongoClient
 import threading
+from mongoengine import *
+from MLIotLibrary.Shared.Config import Config
+from MLIotLibrary.Shared.Schema import Node
+
+config = Config()
+connect('Lio', alias='default', host=config.ConnectionString)
+node = Node.MNode(NodeType=1, Name='Test Node', NetworkAddress=1,)
+node.save()
+
 
 __author__ = 'Stephen'
 print("hello world, we gonna do some cool stuff")
 
-server = MLServer()
-server.start()
+# server = MLServer()
+# server.start()
 
 #spin up xbee handler
 

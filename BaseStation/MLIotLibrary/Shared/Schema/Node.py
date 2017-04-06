@@ -10,7 +10,7 @@ from ..Config import Config
 
 #MongoDB mongoengine schema
 class MNode(Document):
-    HostId = ObjectIdField(required=True)
+    HostId = ObjectIdField()
     Audit = EmbeddedDocumentField(Audit)
     NodeType = IntField(required=True, default=1)
     Name = StringField(required=True)
@@ -20,12 +20,14 @@ class MNode(Document):
     Group = EmbeddedDocumentField(Group)
     LastHeartbeat = DateTimeField()
     NetworkAddress = IntField(required=True)
-    IpAddress = StringField(required=True)
+    IpAddress = StringField()
 
 #SQL sqlalchemy schema
-class SNode(Base):
-    __tablename__ = 'Nodes'
-    Name = Column(String)
+class SNode():
+    def __init__(self):
+        return
+   # __tablename__ = 'Nodes'
+   # Name = Column(String)
 
 
 

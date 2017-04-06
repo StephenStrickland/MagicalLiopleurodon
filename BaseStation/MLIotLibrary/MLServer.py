@@ -3,6 +3,7 @@ import configparser
 from MLIotLibrary.RadioService.MLRadioServer import MLRadioServer
 from MLIotLibrary.RestApiService.MLApiServer import MLApiServer
 import os
+from .Shared.Config import Config
 from MLIotLibrary.RestApiService import app
 from bottle import debug, run
 class MLServer:
@@ -12,28 +13,9 @@ class MLServer:
         self.baudRate = 9600
         self.enableApi = True
         self.logMode = 0
-        self.config()
+        self.config = Config()
 
-    def config(self):
-        config = configparser.ConfigParser()
-        config.read('lio.config')
-        self.baudRate = int(config['radio']['BaudRate'])
-        self.radioUsbPort = config['radio']['UsbPort']
-        self.port = int(config['api']['Port'])
-        self.enableApi = bool(config['api']['EnableApi'])
-        self.logMode = int(config['logging']['LogMode'])
-        try:
-            self.useMongo = bool(config['database']['UseMongo'])
-        except KeyError as err:
-            print('')
-        try:
-            self.useSql = bool(config['database']['UseSql'])
-        except KeyError as err:
-            print('missing sql database keys' if not self.useMongo else '')
-        try:
-            self.ConnectionString = config['database']['MongoConnectionString'] if self.useMongo else config['database']['SqlConnectionString']
-        except KeyError as err:
-            print('missing database connection key')
+
 
 
     def start(self):
