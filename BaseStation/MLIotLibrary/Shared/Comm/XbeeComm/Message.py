@@ -7,7 +7,7 @@ class Message:
     def __init__(self, dataIv, dataString, dataSignedHash, senderId, recipientList, nonce):
         self.iv=dataIv
         self.data={"dataString":dataString, "nonce":nonce}
-        self.encData
+        self.encData = ""
         self.signature=dataSignedHash
         self.sender=senderId
         self.recipients=recipientList

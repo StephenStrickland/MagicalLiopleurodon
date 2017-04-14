@@ -26,3 +26,14 @@ class Config:
             self.ConnectionString = config['database']['MongoConnectionString'] if self.useMongo else config['database']['SqlConnectionString']
         except KeyError as err:
             print('missing database connection key')
+
+
+
+    def updateId(self, id):
+        config = configparser.ConfigParser()
+        config.read('lio.config')
+        config.set('database', 'hostId', str(id))
+        with open(r'lio.config', 'wb') as configFile:
+            config.write(configFile)
+
+

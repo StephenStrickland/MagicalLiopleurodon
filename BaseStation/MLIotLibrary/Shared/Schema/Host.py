@@ -16,3 +16,4 @@ class Host(Document):
 
 def get_host_by_id(id):
     return Host.objects(id=id)
+
