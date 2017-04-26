@@ -290,7 +290,6 @@ void setup()
 
 	//init our serial setup
 	Serial.begin(9600);
-  Serial.setTimeout(2000);
   delay(500);
   Serial.println("spun up");
 
@@ -299,6 +298,10 @@ void setup()
   Serial.println(digitalRead(CONFIG_TRIGGER_PIN) == LOW);
   if(digitalRead(CONFIG_TRIGGER_PIN) == LOW)
     handleConfig();
+  ConfigFile conf = readEEPROMConfig();
+  Serial.println("config stuff");
+  Serial.println(*conf.i);
+  Serial.println(*conf.ph);
 
 }
 
