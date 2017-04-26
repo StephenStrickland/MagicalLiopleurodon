@@ -12,7 +12,6 @@
 #define LED_BUILTIN 13
 #endif
 
-
 #define CONFIG_TRIGGER_PIN 5
 
 void handleConfig()
@@ -79,6 +78,20 @@ void sendMessage()
 void sendATCommand()
 {
 
+}
+
+/** Gets the config file from EEPROM
+ *
+ * @param configFile - the JSON object to store the config file to
+ * @return - 0 on no error, non zero otherwise
+ * 
+ */
+uint8_t getConfigFile(JsonObject& configFile, uint16_t fileSize)
+{
+	char json[fileSize] = EEPROM.get()
+	DynamicJsonBuffer jsonBuffer;
+
+	return 0;
 }
 
 void setup()
