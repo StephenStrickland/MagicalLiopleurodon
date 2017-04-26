@@ -12,6 +12,8 @@
 #define LED_BUILTIN 13
 #endif
 
+
+#define CONFIG_TRIGGER_PIN 5
 void setup()
 {
   // initialize LED digital pin as an output.
@@ -20,6 +22,9 @@ void setup()
 
 void loop()
 {
+  Serial.begin(9600);
+  pinMode(CONFIG_TRIGGER_PIN, LOW);
+
   // turn the LED on (HIGH is the voltage level)
   digitalWrite(LED_BUILTIN, HIGH);
 
@@ -40,5 +45,5 @@ void handleConfig()
 
 void sendMessage()
 {
-  
+
 }
