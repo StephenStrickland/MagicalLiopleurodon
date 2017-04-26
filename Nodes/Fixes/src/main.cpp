@@ -197,33 +197,31 @@ void writeEEPROMConfig(uint8_t* json, uint16_t jsonDataSize)
 
 	JsonObject& root = jsonBuffer.parseObject(json);
 
-	ConfigFile configFile;
-
-	configFile.i = root["i"];
-	configFile.ph = root["ph"];
-	configFile.pl = root["pl"];
+	config.i = root["i"];
+	config.ph = root["ph"];
+	config.pl = root["pl"];
 
 	JsonArray& nk = root["nk"];
-	configFile.nk[0] = nk[0];
-	configFile.nk[1] = nk[1];
-	configFile.nk[2] = nk[2];
-	configFile.nk[3] = nk[3];
+	nk.copyTo(config.nk[0]);
+	nk.copyTo(config.nk[1]);
+	nk.copyTo(config.nk[2]);
+	nk.copyTo(config.nk[3]);
 
-	configFile.ni = root["ni"];
+	config.ni = root["ni"];
 
 	JsonArray& mk = root["mk"];
-	configFile.mk[0] = mk[0];
-	configFile.mk[1] = mk[1];
-	configFile.mk[2] = mk[2];
-	configFile.mk[3] = mk[3];
+	mk.copyTo(config.mk[0]);
+	mk.copyTo(config.mk[1]);
+	mk.copyTo(config.mk[2]);
+	mk.copyTo(config.mk[3]);
 
-	configFile.mi = root["mi"];
-	configFile.np = root["np"];
-	configFile.mp = root["mp"];
-	configFile.n = root["n"];
+	config.mi = root["mi"];
+	config.np = root["np"];
+	config.mp = root["mp"];
+	config.n = root["n"];
 
 	//write the EEPROM data.
-	EEPROM.put(0, configFile);
+	EEPROM.put(0, config);
 }
 
 ConfigFile readEEPROMConfig()
