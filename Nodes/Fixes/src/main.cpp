@@ -15,6 +15,14 @@
 
 #define CONFIG_TRIGGER_PIN 5
 
+
+uint16_t getConfigLength()
+{
+  int configLength = 0;
+  EEPROM.get(0, configLength);
+  return configLength;
+}
+
 void handleConfig()
 {
   uint16_t endingIndex = 1;
@@ -59,8 +67,8 @@ void handleConfig()
   //EEPROM.write(0, remaining == 0 ? (endingIndex + 1) : 255);
   //EEPROM.write(1, remaining);
 
-  int configLength = EEPROM.read(0) + EEPROM.read(1);
-  for (int i = 0; i <configLength; i++)
+  uint16_t length = getConfigLength();
+  for (int i = 0; i <length; i++)
   {
     // print out each char to serial, basically confirms the config file to the
     // Base Station
@@ -70,6 +78,8 @@ void handleConfig()
 
   Serial.println("complete");
 }
+
+
 
 void sendMessage()
 {
