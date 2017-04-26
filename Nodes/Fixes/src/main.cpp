@@ -38,6 +38,51 @@ typedef struct
 	uint8_t n;
 } ConfigFile;
 
+
+void writeEEPROMConfig(uint8_t* json, uint16_t jsonDataSize)
+{
+	DynamicJsonBuffer jsonBuffer(jsonDataSize);
+
+	JsonObject& root = jsonBuffer.parseObject(json);
+
+	ConfigFile configFile;
+
+	configFile.i = root["i"];
+	configFile.ph = root["ph"];
+	configFile.pl = root["pl"];
+
+	JsonArray& nk = root["nk"];
+	configFile.nk[0] = nk[0];
+	configFile.nk[1] = nk[1];
+	configFile.nk[2] = nk[2];
+	configFile.nk[3] = nk[3];
+
+	configFile.ni = root["ni"];
+
+	JsonArray& mk = root["mk"];
+	configFile.mk[0] = mk[0];
+	configFile.mk[1] = mk[1];
+	configFile.mk[2] = mk[2];
+	configFile.mk[3] = mk[3];
+
+	configFile.mi = root["mi"];
+	configFile.np = root["np"];
+	configFile.mp = root["mp"];
+	configFile.n = root["n"];
+
+	//write the EEPROM data.
+	EEPROM.put(0, configFile);
+}
+
+ConfigFile readEEPROMConfig()
+{
+	ConfigFile configFile;
+
+	EEPROM.get(0, configFile);
+
+	return configFile;
+}
+
 void handleConfig()
 {
 	uint16_t length = 0;
@@ -224,49 +269,7 @@ void configureXBee()
   sendAtCommand(atRequest);
 }
 
-void writeEEPROMConfig(uint8_t* json, uint16_t jsonDataSize)
-{
-	DynamicJsonBuffer jsonBuffer(jsonDataSize);
 
-	JsonObject& root = jsonBuffer.parseObject(json);
-
-	ConfigFile configFile;
-
-	configFile.i = root["i"];
-	configFile.ph = root["ph"];
-	configFile.pl = root["pl"];
-
-	JsonArray& nk = root["nk"];
-	configFile.nk[0] = nk[0];
-	configFile.nk[1] = nk[1];
-	configFile.nk[2] = nk[2];
-	configFile.nk[3] = nk[3];
-
-	configFile.ni = root["ni"];
-
-	JsonArray& mk = root["mk"];
-	configFile.mk[0] = mk[0];
-	configFile.mk[1] = mk[1];
-	configFile.mk[2] = mk[2];
-	configFile.mk[3] = mk[3];
-
-	configFile.mi = root["mi"];
-	configFile.np = root["np"];
-	configFile.mp = root["mp"];
-	configFile.n = root["n"];
-
-	//write the EEPROM data.
-	EEPROM.put(0, configFile);
-}
-
-ConfigFile readEEPROMConfig()
-{
-	ConfigFile configFile;
-
-	EEPROM.get(0, configFile);
-
-	return configFile;
-}
 
 void setup()
 {
