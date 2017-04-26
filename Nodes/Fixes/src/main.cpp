@@ -17,7 +17,9 @@
 
 #define CONFIG_TRIGGER_PIN 5
 
-XBee xbee = XBee();
+XBee xbee;
+
+ConfigFile config;
 
 /** Struct of the JSON config file
  *
@@ -93,57 +95,67 @@ void sendATCommand()
  */
 void sendAtCommand(AtCommandRequest req)
 {
-  Serial.println("Sending command to the XBee");
-  AtCommandResponse atResponse = AtCommandResponse();
-  // send the command
-  xbee.send(req);
+	Serial.println("Sending command to the XBee");
+	AtCommandResponse atResponse = AtCommandResponse();
+	// send the command
+	xbee.send(req);
 
-  // wait up to 5 seconds for the status response
-  if (xbee.readPacket(5000)) {
-    // got a response!
+	// wait up to 5 seconds for the status response
+	if(xbee.readPacket(5000))
+	{
+		// got a response!
 
-    // should be an AT command response
-    if (xbee.getResponse().getApiId() == AT_COMMAND_RESPONSE) {
-      xbee.getResponse().getAtCommandResponse(atResponse);
+		// should be an AT command response
+		if(xbee.getResponse().getApiId() == AT_COMMAND_RESPONSE)
+		{
+			xbee.getResponse().getAtCommandResponse(atResponse);
 
-      if (atResponse.isOk()) {
-        Serial.print("Command [");
-        Serial.print(atResponse.getCommand()[0]);
-        Serial.print(atResponse.getCommand()[1]);
-        Serial.println("] was successful!");
+			if(atResponse.isOk())
+			{
+				Serial.print("Command [");
+				Serial.print(atResponse.getCommand()[0]);
+				Serial.print(atResponse.getCommand()[1]);
+				Serial.println("] was successful!");
 
-        if (atResponse.getValueLength() > 0) {
-          Serial.print("Command value length is ");
-          Serial.println(atResponse.getValueLength(), DEC);
+				if(atResponse.getValueLength() > 0)
+				{
+					Serial.print("Command value length is ");
+					Serial.println(atResponse.getValueLength(), DEC);
 
-          Serial.print("Command value: ");
+					Serial.print("Command value: ");
 
-          for (int i = 0; i < atResponse.getValueLength(); i++) {
-            Serial.print(atResponse.getValue()[i], HEX);
-            Serial.print(" ");
-          }
+					for(int i = 0; i < atResponse.getValueLength(); i++)
+					{
+						Serial.print(atResponse.getValue()[i], HEX);
+						Serial.print(" ");
+					}
 
-          Serial.println("");
-        }
-      }
-      else {
-        Serial.print("Command return error code: ");
-        Serial.println(atResponse.getStatus(), HEX);
-      }
-    } else {
-      Serial.print("Expected AT response but got ");
-      Serial.print(xbee.getResponse().getApiId(), HEX);
-    }
-  } else {
-    // at command failed
-    if (xbee.getResponse().isError()) {
-      Serial.print("Error reading packet.  Error code: ");
-      Serial.println(xbee.getResponse().getErrorCode());
-    }
-    else {
-      Serial.print("No response from radio");
-    }
-  }
+					Serial.println("");
+				}
+			}
+			else
+			{
+				Serial.print("Command return error code: ");
+				Serial.println(atResponse.getStatus(), HEX);
+			}
+		}
+		else
+		{
+			Serial.print("Expected AT response but got ");
+			Serial.print(xbee.getResponse().getApiId(), HEX);
+		}
+	}
+	else
+	{
+		// at command failed
+		if(xbee.getResponse().isError())
+		{
+			Serial.print("Error reading packet.  Error code: ");
+			Serial.println(xbee.getResponse().getErrorCode());
+		}
+		else
+			Serial.print("No response from radio");
+	}
 }
 
 /** configures XBee radio
@@ -151,33 +163,33 @@ void sendAtCommand(AtCommandRequest req)
  */
 void configureXBee()
 {
-  //Encryption Enable
-  uint8_t eeCmd[] = {'E', 'E'};
-  //Turn on EE
-  uint8_t eeVal[] = {1};
-  //Encryption Key
-  uint8_t kyCmd[] = {'K', 'Y'};
-  //Write commands to non-volatile memory
-  uint8_t wrCmd[] = {'W', 'R'};
-  //Default key, for now.
-  uint8_t key[] = {'t', 'h', 'i', 's', ' ', 'i', 's', ' ', 'a', ' ', 'k', 'e', 'y', '1', '2', '3'};
+	//Encryption Enable
+	uint8_t eeCmd[] = {'E', 'E'};
+	//Turn on EE
+	uint8_t eeVal[] = {1};
+	//Encryption Key
+	uint8_t kyCmd[] = {'K', 'Y'};
+	//Write commands to non-volatile memory
+	uint8_t wrCmd[] = {'W', 'R'};
+	//Default key, for now.
+	uint8_t key[] = {'t', 'h', 'i', 's', ' ', 'i', 's', ' ', 'a', ' ', 'k', 'e', 'y', '1', '2', '3'};
 
-  AtCommandRequest atRequest = AtCommandRequest();
-  delay(5000);
-  atRequest.setCommand(eeCmd);
-  atRequest.setCommandValue(eeVal);
-  atRequest.setCommandValueLength(1);
-  sendAtCommand(atRequest);
-  atRequest.clearCommandValue();
-  atRequest.setCommand(kyCmd);
-  atRequest.setCommandValue(key);
-  atRequest.setCommandValueLength(16);
-  sendAtCommand(atRequest);
-  atRequest.clearCommandValue();
+	AtCommandRequest atRequest = AtCommandRequest();
+	delay(5000);
+	atRequest.setCommand(eeCmd);
+	atRequest.setCommandValue(eeVal);
+	atRequest.setCommandValueLength(1);
+	sendAtCommand(atRequest);
+	atRequest.clearCommandValue();
+	atRequest.setCommand(kyCmd);
+	atRequest.setCommandValue(key);
+	atRequest.setCommandValueLength(16);
+	sendAtCommand(atRequest);
+	atRequest.clearCommandValue();
 
-  atRequest.setCommand(wrCmd);
-  sendAtCommand(atRequest);
-//  delete atRequest;
+	atRequest.setCommand(wrCmd);
+	sendAtCommand(atRequest);
+	//  delete atRequest;
 
 }
 
@@ -233,15 +245,12 @@ void setup()
 	//init our serial setup
 	Serial.begin(9600);
 
-	//grab the length t
+	//if this pin is low, trigger handleConfig()
+	if(digitalRead(CONFIG_TRIGGER_PIN) == LOW)
+		handleConfig();
 }
 
 void loop()
 {
 	pinMode(CONFIG_TRIGGER_PIN, INPUT_PULLUP);
-
-	//if this pin is low, trigger handleConfig()
-	if(digitalRead(CONFIG_TRIGGER_PIN) == LOW)
-		handleConfig();
-
-	}
+}
