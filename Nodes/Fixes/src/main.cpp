@@ -89,17 +89,6 @@ void configureXBee()
 
 }
 
-void setup()
-{
-	// initialize LED digital pin as an output.
-	pinMode(LED_BUILTIN, OUTPUT);
-
-	//init our serial setup
-	Serial.begin(9600);
-
-	//grab the length t
-}
-
 void writeEEPROMConfig(uint8_t* json, uint16_t jsonDataSize)
 {
 	DynamicJsonBuffer jsonBuffer(jsonDataSize);
@@ -142,6 +131,17 @@ ConfigFile readEEPROMConfig()
 	EEPROM.get(0, configFile);
 
 	return configFile;
+}
+
+void setup()
+{
+	// initialize LED digital pin as an output.
+	pinMode(LED_BUILTIN, OUTPUT);
+
+	//init our serial setup
+	Serial.begin(9600);
+
+	//grab the length t
 }
 
 void loop()
