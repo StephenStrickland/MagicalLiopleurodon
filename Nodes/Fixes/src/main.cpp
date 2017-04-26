@@ -88,7 +88,6 @@ void sendATCommand()
 
 }
 
-
 /** sends AT Command to XBee radio
  *
  */
@@ -195,18 +194,18 @@ void writeEEPROMConfig(uint8_t* json, uint16_t jsonDataSize)
 	configFile.pl = root["pl"];
 
 	JsonArray& nk = root["nk"];
-	configFile.nk0 = nk[0];
-	configFile.nk1 = nk[1];
-	configFile.nk2 = nk[2];
-	configFile.nk3 = nk[3];
+	configFile.nk[0] = nk[0];
+	configFile.nk[1] = nk[1];
+	configFile.nk[2] = nk[2];
+	configFile.nk[3] = nk[3];
 
 	configFile.ni = root["ni"];
 
 	JsonArray& mk = root["mk"];
-	configFile.mk0 = mk[0];
-	configFile.mk1 = mk[1];
-	configFile.mk2 = mk[2];
-	configFile.mk3 = mk[3];
+	configFile.mk[0] = mk[0];
+	configFile.mk[1] = mk[1];
+	configFile.mk[2] = mk[2];
+	configFile.mk[3] = mk[3];
 
 	configFile.mi = root["mi"];
 	configFile.np = root["np"];
