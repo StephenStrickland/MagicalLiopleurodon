@@ -12,7 +12,6 @@
 #define LED_BUILTIN 13
 #endif
 
-
 #define CONFIG_TRIGGER_PIN 5
 
 /** Struct of the JSON config file
@@ -32,40 +31,32 @@ typedef struct
 	uint8_t n;
 } ConfigFile;
 
-uint16_t getConfigLength()
-{
-	int configLength = 0;
-	EEPROM.get(0, configLength);
-	return configLength;
-}
-
 void handleConfig()
 {
-	uint16_t endingIndex = 1;
+	uint16_t length = 0;
 
-	byte incomingByte = 0;
+	uint8_t incomingChar = 0;
 	Serial.println("Entered configuration mode");
 	Serial.println("Waiting on config file...");
+
+	uint8_t config[320];
 
 	while(true)
 	{
 		if(Serial.available() > 0)
 		{
-			incomingByte = Serial.read();
+			incomingChar = Serial.read();
 			//carriage return is the last char in the config stream, exit loop
-			if(incomingByte == '\r')
-			{
-				delay(50);
+			if(incomingChar == '\r')
 				break;
-			}
 			else
 			{
-				//write the byte as a uint8_t to EEPROM
-				EEPROM.write(endingIndex, (uint8_t)incomingByte);
-				endingIndex++;
+				//write the uint8_t to config to be passed into the deserialization handler
+				config[length] = incomingChar;
+				incomingChar++;
 
 				//make the max size of the code to be 0xffff in size.
-				if(endingIndex+1 > 0xFFFF)
+				if(length+1 > 0xFFFF)
 				{
 					Serial.println("Error! The config file is to large! Needs to be less than 65535 bytes.");
 					return;
@@ -75,26 +66,10 @@ void handleConfig()
 	}
 
 	Serial.println("File ending acknowledged, writing to non-volatile memory");
-	Serial.println(endingIndex);
-
-	EEPROM.put(0, (uint16_t)endingIndex+1);
-	//int remaining = (endingIndex + 1) - 255 > 0 ? (endingIndex + 1) - 255 : 0;
-	//write out the length to the first two bytes in EEPROM
-	//EEPROM.write(0, remaining == 0 ? (endingIndex + 1) : 255);
-	//EEPROM.write(1, remaining);
-
-	uint16_t length = getConfigLength();
-	for(int i = 0; i <length; i++)
-	{
-		// print out each char to serial, basically confirms the config file to the
-		// Base Station
-		Serial.print((char)EEPROM.read(i + 2));
-	}
-	Serial.print("\r\n");
+	Serial.println(length);
 
 	Serial.println("complete");
 }
-
 
 void sendMessage()
 {
@@ -125,28 +100,28 @@ void writeEEPROMConfig(uint8_t* json, uint16_t jsonDataSize)
 
 	ConfigFile configFile;
 
-	configFile.i = root["i"]; 
-	configFile.ph = root["ph"]; 
-	configFile.pl = root["pl"]; 
+	configFile.i = root["i"];
+	configFile.ph = root["ph"];
+	configFile.pl = root["pl"];
 
 	JsonArray& nk = root["nk"];
-	configFile.nk0 = nk[0]; 
-	configFile.nk1 = nk[1]; 
-	configFile.nk2 = nk[2]; 
-	configFile.nk3 = nk[3]; 
+	configFile.nk0 = nk[0];
+	configFile.nk1 = nk[1];
+	configFile.nk2 = nk[2];
+	configFile.nk3 = nk[3];
 
-	configFile.ni = root["ni"]; 
+	configFile.ni = root["ni"];
 
 	JsonArray& mk = root["mk"];
-	configFile.mk0 = mk[0]; 
-	configFile.mk1 = mk[1]; 
-	configFile.mk2 = mk[2]; 
-	configFile.mk3 = mk[3]; 
+	configFile.mk0 = mk[0];
+	configFile.mk1 = mk[1];
+	configFile.mk2 = mk[2];
+	configFile.mk3 = mk[3];
 
-	configFile.mi = root["mi"]; 
-	configFile.np = root["np"]; 
-	configFile.mp = root["mp"]; 
-	configFile.n = root["n"]; 
+	configFile.mi = root["mi"];
+	configFile.np = root["np"];
+	configFile.mp = root["mp"];
+	configFile.n = root["n"];
 
 	//write the EEPROM data.
 	EEPROM.put(0, configFile);
