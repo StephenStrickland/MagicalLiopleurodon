@@ -15,11 +15,10 @@
 
 #define CONFIG_TRIGGER_PIN 5
 
-
-
 void handleConfig()
 {
-  int endingIndex = 1;
+  uint16_t endingIndex = 1;
+
   byte incomingByte = 0;
   Serial.println("Entered configuration mode");
   Serial.println("Waiting on config file...");
@@ -40,16 +39,25 @@ void handleConfig()
         //write the byte as a uint8_t to EEPROM
         EEPROM.write(endingIndex, (uint8_t)incomingByte);
         endingIndex++;
+
+				//make the max size of the code to be 0xffff in size.
+				if(endingIndex+1 > 0xFFFF)
+				{
+					Serial.println("Error! The config file is to large! Needs to be less than 65535 bytes.");
+					return;
+				}
       }
     }
   }
 
   Serial.println("File ending acknowledged, writing to non-volatile memory");
   Serial.println(endingIndex);
-  int remaining = (endingIndex + 1) - 255 > 0 ? (endingIndex + 1) - 255 : 0;
+
+	EEPROM.put(0, (uint16_t)endingIndex+1);
+  //int remaining = (endingIndex + 1) - 255 > 0 ? (endingIndex + 1) - 255 : 0;
   //write out the length to the first two bytes in EEPROM
-  EEPROM.write(0, remaining == 0 ? (endingIndex + 1) : 255);
-  EEPROM.write(1, remaining);
+  //EEPROM.write(0, remaining == 0 ? (endingIndex + 1) : 255);
+  //EEPROM.write(1, remaining);
 
   int configLength = EEPROM.read(0) + EEPROM.read(1);
   for (int i = 0; i <configLength; i++)
@@ -73,17 +81,19 @@ void sendATCommand()
 
 }
 
-
-
 void setup()
 {
   // initialize LED digital pin as an output.
   pinMode(LED_BUILTIN, OUTPUT);
+
+	//init our serial setup
+	Serial.begin(9600);
+
+	//grab the length t
 }
 
 void loop()
 {
-  Serial.begin(9600);
   pinMode(CONFIG_TRIGGER_PIN, INPUT_PULLUP);
 
   //if this pin is low, trigger handleConfig()
