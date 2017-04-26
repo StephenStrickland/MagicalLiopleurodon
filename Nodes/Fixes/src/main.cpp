@@ -16,7 +16,7 @@
 #define CONFIG_TRIGGER_PIN 5
 
 /** Struct of the JSON config file
- * 
+ *
  */
 typedef struct
 {
@@ -32,12 +32,6 @@ typedef struct
 	uint8_t n;
 } ConfigFile;
 
-uint16_t getConfigLength()
-{
-  int configLength = 0;
-  EEPROM.get(0, configLength);
-  return configLength;
-}
 
 void handleConfig()
 {
