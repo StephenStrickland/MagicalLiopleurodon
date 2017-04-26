@@ -268,11 +268,6 @@ void configureXBee()
   sendAtCommand(atRequest);
 }
 
-void readEEPROMConfig()
-{
-	EEPROM.get(0, configFile);
-}
-
 void setup()
 {
 	// initialize LED digital pin as an output.
