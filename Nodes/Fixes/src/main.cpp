@@ -6,6 +6,7 @@
  */
 #include "Arduino.h"
 #include <ArduinoJson.h>
+#include "EEPROM.h"
 
 #ifndef LED_BUILTIN
 #define LED_BUILTIN 13
