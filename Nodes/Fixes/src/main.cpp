@@ -231,16 +231,16 @@ void setup()
 
 	//init our serial setup
 	Serial.begin(9600);
-
-	//grab the length t
-}
-
-void loop()
-{
-	pinMode(CONFIG_TRIGGER_PIN, INPUT_PULLUP);
+  pinMode(CONFIG_TRIGGER_PIN, INPUT_PULLUP);
 
 	//if this pin is low, trigger handleConfig()
 	if(digitalRead(CONFIG_TRIGGER_PIN) == LOW)
 		handleConfig();
+
+}
+
+void loop()
+{
+
 
 }
