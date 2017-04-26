@@ -87,6 +87,14 @@ void sendATCommand()
 
 }
 
+/** configures XBee radio
+ * sets up radio level encryption
+ */
+void configureXBee()
+{
+
+}
+
 void setup()
 {
   // initialize LED digital pin as an output.
