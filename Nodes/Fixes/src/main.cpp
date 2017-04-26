@@ -15,6 +15,23 @@
 
 #define CONFIG_TRIGGER_PIN 5
 
+/** Struct of the JSON config file
+ * 
+ */
+typedef struct
+{
+	uint8_t i[256];
+	uint8_t ph[136];
+	uint8_t pl[136];
+	uint8_t nk[5][168];
+	uint8_t ni;
+	uint8_t mk[5][168];
+	uint8_t mi;
+	uint8_t np;
+	uint8_t mp;
+	uint8_t n;
+} ConfigFile;
+
 void handleConfig()
 {
   uint16_t endingIndex = 1;
