@@ -10,14 +10,11 @@
 #include <Printers.h>
 #include <XBee.h>
 
-
 #ifndef LED_BUILTIN
 #define LED_BUILTIN 13
 #endif
 
 #define CONFIG_TRIGGER_PIN 5
-
-
 
 /** Struct of the JSON config file
  *
@@ -51,18 +48,18 @@ void writeEEPROMConfig(uint8_t* json, uint16_t jsonDataSize)
 	config.pl = root["pl"];
 
 	JsonArray& nk = root["nk"];
-	nk.copyTo(config.nk[0]);
-	nk.copyTo(config.nk[1]);
-	nk.copyTo(config.nk[2]);
-	nk.copyTo(config.nk[3]);
+	nk.copyTo((const char*)config.nk[0]);
+	nk.copyTo((const char*)config.nk[1]);
+	nk.copyTo((const char*)config.nk[2]);
+	nk.copyTo((const char*)config.nk[3]);
 
 	config.ni = root["ni"];
 
 	JsonArray& mk = root["mk"];
-	mk.copyTo(config.mk[0]);
-	mk.copyTo(config.mk[1]);
-	mk.copyTo(config.mk[2]);
-	mk.copyTo(config.mk[3]);
+	mk.copyTo((const char*)config.mk[0]);
+	mk.copyTo((const char*)config.mk[1]);
+	mk.copyTo((const char*)config.mk[2]);
+	mk.copyTo((const char*)config.mk[3]);
 
 	config.mi = root["mi"];
 	config.np = root["np"];
