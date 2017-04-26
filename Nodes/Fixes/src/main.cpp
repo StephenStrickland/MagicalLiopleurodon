@@ -159,24 +159,22 @@ void configureXBee()
   uint8_t wrCmd[] = {'W', 'R'};
   //Default key, for now.
   uint8_t key[] = {'t', 'h', 'i', 's', ' ', 'i', 's', ' ', 'a', ' ', 'k', 'e', 'y', '1', '2', '3'};
-
   AtCommandRequest atRequest = AtCommandRequest();
-  delay(5000);
+  //turn on encryption
   atRequest.setCommand(eeCmd);
   atRequest.setCommandValue(eeVal);
   atRequest.setCommandValueLength(1);
   sendAtCommand(atRequest);
+  //set encryption key
   atRequest.clearCommandValue();
   atRequest.setCommand(kyCmd);
   atRequest.setCommandValue(key);
   atRequest.setCommandValueLength(16);
   sendAtCommand(atRequest);
   atRequest.clearCommandValue();
-
+  //tell xbee to write vals to non-volatile memory
   atRequest.setCommand(wrCmd);
   sendAtCommand(atRequest);
-//  delete atRequest;
-
 }
 
 void writeEEPROMConfig(uint8_t* json, uint16_t jsonDataSize)
