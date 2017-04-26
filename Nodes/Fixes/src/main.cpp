@@ -79,7 +79,7 @@ void handleConfig()
 void sendMessage(uint8_t message[], int length)
 {
   char msgCpy[length];
-    for(int i=0;i<leng;i++)
+    for(int i=0;i<length;i++)
     {
       msgCpy[i]=message[i];
     }
