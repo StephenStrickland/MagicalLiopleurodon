@@ -81,11 +81,6 @@ void sendMessage()
 
 }
 
-void sendATCommand()
-{
-
-}
-
 /** sends AT Command to XBee radio
  *
  */
