@@ -5,6 +5,7 @@
  * then off for one second, repeatedly.
  */
 #include "Arduino.h"
+#include <ArduinoJson.h>
 
 #ifndef LED_BUILTIN
 #define LED_BUILTIN 13
