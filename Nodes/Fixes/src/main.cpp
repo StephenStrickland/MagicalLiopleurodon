@@ -36,21 +36,32 @@ void writeEEPROMConfig(uint8_t* json, uint16_t jsonDataSize)
 	DynamicJsonBuffer jsonBuffer(jsonDataSize);
 
 	JsonObject& root = jsonBuffer.parseObject(json);
-
-
-  JsonArray& i = root["i"];
-  root["i"].printTo(Serial);
-  i.copyTo((char)config.i);
-  for (size_t i = 0; i < 24; i++) {
-    Serial.print(config.i[i]);
+  char temp[24];
+  //the printTo includes wrapping quotes
+  root["i"].printTo((char*)temp, root["i"].measureLength() + 1);
+  for(int i = 0; i < 24; i++)
+  {
+    config.i[i] = temp[i + 1];
   }
-  JsonArray& ph = root["ph"];
-  ph.copyTo(config.ph);
-  JsonArray& pl = root["pl"];
-  pl.copyTo(config.pl);
-  // config.i = root["i"];
-	// config.ph = root["ph"];
-	// config.pl = root["pl"];
+  delete temp;
+  Serial.println(config.i);
+  Serial.println(config.i);
+
+  char t[8];
+  root["ph"].printTo((char*)t, root["ph"].measureLength() + 1);
+  for(int i = 0; i < 24; i++)
+  {
+    config.ph[i] = t[i + 1];
+  }
+  Serial.println(config.i);
+  char b[8];
+  root["pl"].printTo((char*)b, root["pl"].measureLength() + 1);
+  for(int i = 0; i < 24; i++)
+  {
+    config.pl[i] = b[i + 1];
+  }
+  Serial.println(config.i);
+
 
 	JsonArray& nk = root["nk"];
 	nk.copyTo(config.nk[0]);
@@ -70,9 +81,11 @@ void writeEEPROMConfig(uint8_t* json, uint16_t jsonDataSize)
 	config.np = root["np"];
 	config.mp = root["mp"];
 	config.n = root["n"];
+  Serial.println(config.i);
 
 	//write the EEPROM data.
 	EEPROM.put(0, config);
+  Serial.println(config.i);
 }
 
 ConfigFile readEEPROMConfig()
@@ -92,13 +105,12 @@ void handleConfig()
 	Serial.println("Entered configuration mode");
 	Serial.println("Waiting on config file...");
 
-	String config;
-
+	String c;
 	while(true)
 	{
 		if(Serial.available() > 0)
 		{
-        config = Serial.readStringUntil('\r');
+        c = Serial.readStringUntil('\r');
 				break;
 			// char incomingChar = Serial.read();
       // delay(1);
@@ -122,11 +134,12 @@ void handleConfig()
 			// }
 		}
 	}
-  length = config.length();
-	writeEEPROMConfig((uint8_t*)&config[0],length);
+  length = c.length();
+	writeEEPROMConfig((uint8_t*)&c[0],length);
 
 	Serial.println("File ending acknowledged, writing to non-volatile memory");
 	Serial.println(length);
+  Serial.println(config.i);
 
 	Serial.println("complete");
 }
@@ -302,12 +315,14 @@ void setup()
   Serial.println(digitalRead(CONFIG_TRIGGER_PIN) == LOW);
   if(digitalRead(CONFIG_TRIGGER_PIN) == LOW)
     handleConfig();
-  ConfigFile conf = readEEPROMConfig();
   Serial.println("config stuff");
-  for (size_t i = 0; i < 20; i++) {
-    Serial.print(config.i[i]);
-    /* code */
-  }
+  Serial.println(sizeof(config.i));
+  Serial.println(config.i);
+  Serial.println(config.ph);
+  Serial.println(config.pl);
+  Serial.println(config.i[0]);
+  Serial.println(config.i[23]);
+  Serial.println(config.nk[0]);
 
 }
 
