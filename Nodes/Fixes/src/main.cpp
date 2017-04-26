@@ -52,7 +52,7 @@ void handleConfig()
 			else
 			{
 				//write the uint8_t to config to be passed into the deserialization handler
-				config[length] = incomingChar;
+				config[length++] = incomingChar;
 				incomingChar++;
 
 				//make the max size of the code to be 0xffff in size.
@@ -64,6 +64,8 @@ void handleConfig()
 			}
 		}
 	}
+
+	writeEEPROMConfig(config,length);
 
 	Serial.println("File ending acknowledged, writing to non-volatile memory");
 	Serial.println(length);
@@ -152,4 +154,4 @@ void loop()
 	if(digitalRead(CONFIG_TRIGGER_PIN) == LOW)
 		handleConfig();
 
-}
+	}
