@@ -17,9 +17,7 @@
 
 #define CONFIG_TRIGGER_PIN 5
 
-XBee xbee;
 
-ConfigFile config;
 
 /** Struct of the JSON config file
  *
@@ -37,6 +35,52 @@ typedef struct
 	uint8_t mp;
 	uint8_t n;
 } ConfigFile;
+
+XBee xbee;
+
+ConfigFile config;
+
+void writeEEPROMConfig(uint8_t* json, uint16_t jsonDataSize)
+{
+	DynamicJsonBuffer jsonBuffer(jsonDataSize);
+
+	JsonObject& root = jsonBuffer.parseObject(json);
+
+	config.i = root["i"];
+	config.ph = root["ph"];
+	config.pl = root["pl"];
+
+	JsonArray& nk = root["nk"];
+	nk.copyTo(config.nk[0]);
+	nk.copyTo(config.nk[1]);
+	nk.copyTo(config.nk[2]);
+	nk.copyTo(config.nk[3]);
+
+	config.ni = root["ni"];
+
+	JsonArray& mk = root["mk"];
+	mk.copyTo(config.mk[0]);
+	mk.copyTo(config.mk[1]);
+	mk.copyTo(config.mk[2]);
+	mk.copyTo(config.mk[3]);
+
+	config.mi = root["mi"];
+	config.np = root["np"];
+	config.mp = root["mp"];
+	config.n = root["n"];
+
+	//write the EEPROM data.
+	EEPROM.put(0, config);
+}
+
+ConfigFile readEEPROMConfig()
+{
+	ConfigFile configFile;
+
+	EEPROM.get(0, configFile);
+
+	return configFile;
+}
 
 void handleConfig()
 {
@@ -78,13 +122,48 @@ void handleConfig()
 	Serial.println("complete");
 }
 
-void sendMessage()
+void sendMessage(uint8_t message[], int length)
 {
-
-}
-
-void sendATCommand()
-{
+  char msgCpy[length];
+    for(int i=0;i<length;i++)
+    {
+      msgCpy[i]=message[i];
+    }
+    StaticJsonBuffer<200> jsonBuffer;
+  // JsonObject& root = jsonBuffer.createObject();
+  // JsonObject& data = jsonBuffer.createObject();
+  // data["dataString"] = msgCpy;
+  // //JsonObject& prof = *confJ;
+  // Serial.println("");
+  // (*confJ).printTo(Serial);
+  // Serial.println("");
+  // (*confJ)["n"].printTo(Serial);
+  // data["nonce"] = (int)(&(*confJ)["n"]);
+  // String output;
+  //
+  // Serial.println("\ngetting to data");
+  // data.printTo(output);
+  // Serial.println(output);
+  // char buf[output.length()+1];
+  // output.toCharArray(buf,output.length()+1);
+  //
+  // Serial.println(sizeof(buf));
+  // //root["d"]= encMsg(buf,sizeof(buf));
+  // root["d"]=output;
+  //
+  // root["i"]="this is an iv456";
+  // root["sg"]="na";
+  // String sId;
+  // (*confJ)["s"].printTo(sId);
+  // root["s"]=sId;
+  // //String ph;
+  // //String pl;
+  // //ph+=pl;
+  // root["r"] ="0";
+  // String payloadstr;
+  // root.printTo(payloadstr);
+  // char payload[payloadstr.length()];
+  // payloadstr.toCharArray(payload, payloadstr.length());
 
 }
 
@@ -161,67 +240,32 @@ void sendAtCommand(AtCommandRequest req)
  */
 void configureXBee()
 {
-	//Encryption Enable
-	uint8_t eeCmd[] = {'E', 'E'};
-	//Turn on EE
-	uint8_t eeVal[] = {1};
-	//Encryption Key
-	uint8_t kyCmd[] = {'K', 'Y'};
-	//Write commands to non-volatile memory
-	uint8_t wrCmd[] = {'W', 'R'};
-	//Default key, for now.
-	uint8_t key[] = {'t', 'h', 'i', 's', ' ', 'i', 's', ' ', 'a', ' ', 'k', 'e', 'y', '1', '2', '3'};
-
-	AtCommandRequest atRequest = AtCommandRequest();
-	delay(5000);
-	atRequest.setCommand(eeCmd);
-	atRequest.setCommandValue(eeVal);
-	atRequest.setCommandValueLength(1);
-	sendAtCommand(atRequest);
-	atRequest.clearCommandValue();
-	atRequest.setCommand(kyCmd);
-	atRequest.setCommandValue(key);
-	atRequest.setCommandValueLength(16);
-	sendAtCommand(atRequest);
-	atRequest.clearCommandValue();
-
-	atRequest.setCommand(wrCmd);
-	sendAtCommand(atRequest);
-	//  delete atRequest;
-
-}
-
-void writeEEPROMConfig(uint8_t* json, uint16_t jsonDataSize)
-{
-	DynamicJsonBuffer jsonBuffer(jsonDataSize);
-
-	JsonObject& root = jsonBuffer.parseObject(json);
-
-	config.i = root["i"];
-	config.ph = root["ph"];
-	config.pl = root["pl"];
-
-	JsonArray& nk = root["nk"];
-	nk.copyTo(config.nk[0]);
-	nk.copyTo(config.nk[1]);
-	nk.copyTo(config.nk[2]);
-	nk.copyTo(config.nk[3]);
-
-	config.ni = root["ni"];
-
-	JsonArray& mk = root["mk"];
-	mk.copyTo(config.mk[0]);
-	mk.copyTo(config.mk[1]);
-	mk.copyTo(config.mk[2]);
-	mk.copyTo(config.mk[3]);
-
-	config.mi = root["mi"];
-	config.np = root["np"];
-	config.mp = root["mp"];
-	config.n = root["n"];
-
-	//write the EEPROM data.
-	EEPROM.put(0, config);
+  //Encryption Enable
+  uint8_t eeCmd[] = {'E', 'E'};
+  //Turn on EE
+  uint8_t eeVal[] = {1};
+  //Encryption Key
+  uint8_t kyCmd[] = {'K', 'Y'};
+  //Write commands to non-volatile memory
+  uint8_t wrCmd[] = {'W', 'R'};
+  //Default key, for now.
+  uint8_t key[] = {'t', 'h', 'i', 's', ' ', 'i', 's', ' ', 'a', ' ', 'k', 'e', 'y', '1', '2', '3'};
+  AtCommandRequest atRequest = AtCommandRequest();
+  //turn on encryption
+  atRequest.setCommand(eeCmd);
+  atRequest.setCommandValue(eeVal);
+  atRequest.setCommandValueLength(1);
+  sendAtCommand(atRequest);
+  //set encryption key
+  atRequest.clearCommandValue();
+  atRequest.setCommand(kyCmd);
+  atRequest.setCommandValue(key);
+  atRequest.setCommandValueLength(16);
+  sendAtCommand(atRequest);
+  atRequest.clearCommandValue();
+  //tell xbee to write vals to non-volatile memory
+  atRequest.setCommand(wrCmd);
+  sendAtCommand(atRequest);
 }
 
 void readEEPROMConfig()
