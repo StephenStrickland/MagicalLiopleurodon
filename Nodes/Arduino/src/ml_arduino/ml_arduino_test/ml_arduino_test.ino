@@ -1,3 +1,5 @@
+#include <Arduino.h>
+
 #include <Printers.h>
 #include <XBee.h>
 #include "ml_arduino.h"

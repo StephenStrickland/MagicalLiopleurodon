@@ -1,3 +1,5 @@
+#include <Arduino.h>
+
 //just blinks the LED on the MEGA board
 void setup() {
   // put your setup code here, to run once:

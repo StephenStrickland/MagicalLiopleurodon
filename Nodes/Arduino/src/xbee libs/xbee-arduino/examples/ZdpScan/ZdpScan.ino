@@ -1,3 +1,5 @@
+#include <Arduino.h>
+
 /**
  * Copyright (c) 2015 Matthijs Kooijman.
  *

@@ -1,3 +1,5 @@
+#include <Arduino.h>
+
 #include <Printers.h>
 #include <XBee.h>
 
