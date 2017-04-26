@@ -8,7 +8,7 @@
      * Controller of the sbAdminApp
      */
     var app = angular.module('lio');
-    var controllerId = "lio.controllers.node.edit";
+    var controllerId = "lio.controllers.node.details";
     app.controller(controllerId, ['$scope', 'data', '$stateParams', 'modalFactory', 'nodeFactory', nodeEditController]);
 
     function nodeEditController($scope, data, $stateParams, modalFactory, nodeFactory) {
@@ -29,15 +29,6 @@
         vm.triggerCoordModal = false;
 
 
-   //      NodeType = IntField(required=True, default=1)
-   //      Name = StringField(required=True)
-   //      Location = StringField()
-   //      GpsCoordinates = PointField()
-   // # OptionalPrivateKey =
-   //          Group = EmbeddedDocumentField(MGroup)
-   //      LastHeartbeat = DateTimeField()
-   //      NetworkAddress = IntField(required=True)
-   //      IpAddress = StringField()
 
         vm.saveNode = function(){
             vm.node.NodeType = vm.selectedNodeType;

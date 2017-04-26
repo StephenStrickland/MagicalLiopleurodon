@@ -16,6 +16,7 @@
         var nodeFactory = {
             getAllNodes: getAllNodes,
             getNodeById: getNodeById,
+            saveNode: saveNode
 
         };
         return nodeFactory;
@@ -26,6 +27,10 @@
 
         function getNodeById(nodeId){
             return data.get(apiPrefix + '/' + nodeId);
+        }
+
+        function saveNode(node){
+            return data.post(apiPrefix , node);
         }
 
     }

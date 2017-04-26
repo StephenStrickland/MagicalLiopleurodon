@@ -1,6 +1,7 @@
 from mongoengine import Document, DateTimeField, StringField, PointField, ObjectIdField, BooleanField, IntField
 
 class Host(Document):
+    meta = {'collection': 'Hosts'}
     Name = StringField(required=True)
     GpsCoordinates = PointField()
     EnableApi = BooleanField(required=True)
@@ -16,4 +17,12 @@ class Host(Document):
 
 def get_host_by_id(id):
     return Host.objects(id=id)
+
+def get_hosts():
+    return Host.objects()
+
+def create_host(host):
+    host = Host(**host)
+    host.save()
+    return host.id
 

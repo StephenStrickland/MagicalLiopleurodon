@@ -234,5 +234,11 @@ angular
        url:'/grid'
    })
   }]);
+//     .run(['$rootScope', 'sseFactory', function($rootScope, sseFactory){
+//     $rootScope.$on('$stateChangeStart', function(evt, toState, toParams, fromState, fromParams) {
+//         sseFactory.close();
+//     });
+//
+// }]);
 
     

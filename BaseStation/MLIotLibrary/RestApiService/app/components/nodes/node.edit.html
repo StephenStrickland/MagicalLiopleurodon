@@ -4,24 +4,38 @@
     </div>
     <div class="row">
         <div class="col-md-12">
-            <form action="" method="POST" class="form-horizontal" role="form">
+            <form ng-submit="vm.saveNode()" class="form-horizontal" role="form">
                 <div class="form-group">
-                    <label for="inputName" class="col-sm-2 control-label">Name</label>
+                    <label for="node_name" class="col-sm-2 control-label">Node Type</label>
                     <div class="col-sm-6 ">
-                        <input type="text" name="Name" id="inputName" class="form-control" value="" required="required" pattern="" title="" placeholder="Node Name">
+                       <select ng-model="vm.selectedNodeType" ng-options="key for (key, val) in vm.nodeTypes" required>
+
+                       </select>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="inputName" class="col-sm-2 control-label">Location</label>
+                    <label for="node_name" class="col-sm-2 control-label">Name</label>
                     <div class="col-sm-6 ">
-                        <input type="text" name="Name" id="inputName" class="form-control" value="" required="required" pattern="" title="" placeholder="Node Location">
+                        <input type="text" name="Name" id="node_name" class="form-control" ng-model="vm.node.Name" placeholder="Node Name" required>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="inputName" class="col-sm-2 control-label">GPS Coordinates</label>
+                    <label for="node_name" class="col-sm-2 control-label">{{vm.selectedNodeType.key}} Address</label>
+                    <div class="col-sm-6 ">
+                        <input type="number" name="Name" id="node_address" class="form-control" ng-model="vm.node.NetworkAddress" placeholder="Node Address" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="node_location" class="col-sm-2 control-label">Location</label>
+                    <div class="col-sm-6 ">
+                        <input type="text" name="Name" id="node_location" class="form-control" ng-model="vm.node.Location" placeholder="Node Location">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="node_coord" class="col-sm-2 control-label">GPS Coordinates</label>
                     <div class="col-sm-6 ">
                         <div class="input-group">
-                            <input type="text" name="Name" id="inputName" class="form-control" value="" required="required" pattern="" title="" placeholder="Node Coordinates">
+                            <input type="text" name="Name" id="node_coord" class="form-control" ng-model="vm.node.Coordinates"placeholder="Node Coordinates">
                             <span class="input-group-btn" id="basic-aSelect Coordinates"><button ng-click="vm.openCoordinateModal()" type="button" class="btn btn-default">Select Coordinates</button> </span>
                         </div>
                     </div>

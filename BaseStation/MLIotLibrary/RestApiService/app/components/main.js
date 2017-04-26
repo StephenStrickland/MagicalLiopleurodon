@@ -7,5 +7,5 @@
  * Controller of the sbAdminApp
  */
 angular.module('lio')
-  .controller('MainCtrl', function($scope,$position) {
+  .controller('MainCtrl', function($scope) {
   });

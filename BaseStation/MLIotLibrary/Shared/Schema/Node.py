@@ -1,26 +1,54 @@
 from mongoengine import Document, DateTimeField, StringField, ObjectIdField, EmbeddedDocumentField, PointField, IntField
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
+from mongoengine import signals
+import datetime
 Base = declarative_base()
-from sqlalchemy.orm import sessionmaker
 
 from .Audit import Audit
-from .Group import Group
+from .Group import MGroup
 from ..Config import Config
+from collections import namedtuple
+#
+# def handler(event):
+#     """Signal decorator to allow use of callback functions as class decorators."""
+#
+#     def decorator(fn):
+#         def apply(cls):
+#             event.connect(fn, sender=cls)
+#             return cls
+#
+#         fn.apply = apply
+#         return fn
+#
+#     return decorator
+#
+#
+# @handler(signals.pre_init)
+# def handle_init(sender, document, **kwargs):
+#     document.Audit = Audit()
+#
+# @handler(signals.pre_save)
+# def handle_pre_save(sender, document, **kwargs):
+#     document.Audit.ModDate = datetime.datetime.utcnow()
+
+
 
 #MongoDB mongoengine schema
 class MNode(Document):
-    HostId = ObjectIdField()
+    meta = {'collection': 'Nodes', 'strict': False}
+    HostId = ObjectIdField(required=False)
     Audit = EmbeddedDocumentField(Audit)
     NodeType = IntField(required=True, default=1)
     Name = StringField(required=True)
     Location = StringField()
     GpsCoordinates = PointField()
    # OptionalPrivateKey =
-    Group = EmbeddedDocumentField(Group)
+    Group = EmbeddedDocumentField(MGroup)
     LastHeartbeat = DateTimeField()
     NetworkAddress = IntField(required=True)
     IpAddress = StringField()
+
 
 #SQL sqlalchemy schema
 class SNode():
@@ -30,18 +58,38 @@ class SNode():
    # Name = Column(String)
 
 
+def get_all_nodes():
+    return MNode.objects()
 
 
 def get_node_by_id(id):
-    if Config.useMongo:
         return MNode.objects(id=id).first()
-    elif Config.useSql:
-        return None
 
 
 def get_node_by_address(addr):
-    if Config.useMongo:
-        return MNode.objects(NetworkAddress=addr).first()
-    elif Config.useSql:
-        return None
+    return MNode.objects(NetworkAddress=addr).first()
+
+
+def archive_node(id):
+    node = MNode.objects(id=id).first()
+    node.Audit.IsActive = False
+    node.save()
+
+
+def save_node(n):
+    node = MNode(n)
+    node.save()
+
+
+def create_node(n):
+    node = MNode(**n)
+    node.Audit = Audit()
+    node.save()
+    return node.id
+
+
+CachedNode = namedtuple('CachedNode', ['node', 'profile', 'valid'])
+
+
+
 

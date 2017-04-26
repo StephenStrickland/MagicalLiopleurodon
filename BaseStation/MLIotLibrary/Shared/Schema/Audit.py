@@ -3,8 +3,8 @@ from mongoengine import EmbeddedDocument, DateTimeField, StringField, BooleanFie
 __author__ = 'Stephen'
 
 class Audit(EmbeddedDocument):
-    CreateDate = DateTimeField(default=datetime.datetime.utcnow )
+    CreateDate = DateTimeField(default=datetime.datetime.utcnow())
     CreateUser = StringField()
-    ModDate = DateTimeField(default=datetime.datetime.utcnow )
+    ModDate = DateTimeField(default=datetime.datetime.utcnow())
     ModUser = StringField()
-    IsActive = BooleanField()
+    IsActive = BooleanField(default=True)

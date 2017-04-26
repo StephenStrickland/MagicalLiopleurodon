@@ -1,9 +1,10 @@
 from symbol import parameters
 from xbee import XBee,ZigBee, python2to3
 import serial, threading
-from MLIotLibrary.Shared.Comm.XBeeService import XBeeService
+# from MLIotLibrary.Shared.Comm.XBeeService import XBeeService
 from xbee.python2to3 import stringToBytes, intToByte
-# from MLIotLibrary.MLServer import MLServer
+from MLIotLibrary.Shared.Entities.NodeProfile import NodeProfile
+from MLIotLibrary.MLServer import MLServer
 # from MLIotLibrary.Shared.Entities.NodeTelemetry import NodeTelemetry
 # from pymongo import MongoClient
 # import threading
@@ -21,16 +22,18 @@ __author__ = 'Stephen'
 print("hello world, we gonna do some cool stuff")
 
 
-
+n = NodeProfile()
+print(n.__dict__)
+print(len(str(n.__dict__).replace(" ", "").encode('utf-8')))
 
 
 SH = "13A200"
 SL = "4103DC85"
 SHSL = SH + SL
 
-
-# server = MLServer()
-# server.start()
+#
+server = MLServer()
+server.start()
 
 #spin up xbee handler
 
@@ -62,11 +65,11 @@ SHSL = SH + SL
 # serial_port = serial.Serial('/dev/tty.usbserial-DN01IOL6', 9600)
 # xbee = XBee(serial_port, shorthand=True, escaped=True)
 #
-# #xbee.at(frame='A', command=stringToBytes('MY'))
+# xbee.at(frame_id=stringToBytes('A'), command=stringToBytes('MY'))
 # # xbee.at( frame_id=stringToBytes('A'), command=stringToBytes('MY'), parameter=b'\x00\x04')
-# #xbee.send('tx_long_addr', dest_addr=b'\x00\x41\x03\xDC\x85\x13\xA2\x00', data=b'{ping=1}', frame_id=stringToBytes('A'))
-# #response = xbee.wait_read_frame()
-# #print(response)
+# # xbee.send('tx_long_addr', dest_addr=b'\x00\x41\x03\xDC\x85\x13\xA2\x00', data=b'{ping=1}', frame_id=stringToBytes('A'))
+# response = xbee.wait_read_frame()
+# print(response)
 #
 # while True:
 #     try:
@@ -79,12 +82,12 @@ SHSL = SH + SL
 
 
 
+#
+# xbee = XBeeService()
+# xbee.start()
 
-xbee = XBeeService()
-xbee.start()
-
-
-msg = ""
-while msg !=  "q":
-    msg = input('Message to send')
-
+#
+# msg = ""
+# while msg !=  "q":
+#     msg = input('Message to send')
+#
