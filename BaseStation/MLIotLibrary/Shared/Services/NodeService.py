@@ -119,8 +119,8 @@ class NodeService:
         # ser.write(b'4')
         i = 0
         while i < 5:
-            line = ser.readline().strip()
-            print(line)
+            line = ser.readline()
+            print("NODE: ", line)
             i += 1
             # if line != b'I received:':
             # print(line)
