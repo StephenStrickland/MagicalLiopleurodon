@@ -17,9 +17,7 @@
 
 #define CONFIG_TRIGGER_PIN 5
 
-XBee xbee;
 
-ConfigFile config;
 
 /** Struct of the JSON config file
  *
@@ -37,6 +35,10 @@ typedef struct
 	uint8_t mp;
 	uint8_t n;
 } ConfigFile;
+
+XBee xbee;
+
+ConfigFile config;
 
 
 void writeEEPROMConfig(uint8_t* json, uint16_t jsonDataSize)
@@ -131,40 +133,40 @@ void sendMessage(uint8_t message[], int length)
       msgCpy[i]=message[i];
     }
     StaticJsonBuffer<200> jsonBuffer;
-  JsonObject& root = jsonBuffer.createObject();
-  JsonObject& data = jsonBuffer.createObject();
-  data["dataString"] = msgCpy;
-  //JsonObject& prof = *confJ;
-  Serial.println("");
-  (*confJ).printTo(Serial);
-  Serial.println("");
-  (*confJ)["n"].printTo(Serial);
-  data["nonce"] = (int)(&(*confJ)["n"]);
-  String output;
-
-  Serial.println("\ngetting to data");
-  data.printTo(output);
-  Serial.println(output);
-  char buf[output.length()+1];
-  output.toCharArray(buf,output.length()+1);
-
-  Serial.println(sizeof(buf));
-  //root["d"]= encMsg(buf,sizeof(buf));
-  root["d"]=output;
-
-  root["i"]="this is an iv456";
-  root["sg"]="na";
-  String sId;
-  (*confJ)["s"].printTo(sId);
-  root["s"]=sId;
-  //String ph;
-  //String pl;
-  //ph+=pl;
-  root["r"] ="0";
-  String payloadstr;
-  root.printTo(payloadstr);
-  char payload[payloadstr.length()];
-  payloadstr.toCharArray(payload, payloadstr.length());
+  // JsonObject& root = jsonBuffer.createObject();
+  // JsonObject& data = jsonBuffer.createObject();
+  // data["dataString"] = msgCpy;
+  // //JsonObject& prof = *confJ;
+  // Serial.println("");
+  // (*confJ).printTo(Serial);
+  // Serial.println("");
+  // (*confJ)["n"].printTo(Serial);
+  // data["nonce"] = (int)(&(*confJ)["n"]);
+  // String output;
+  //
+  // Serial.println("\ngetting to data");
+  // data.printTo(output);
+  // Serial.println(output);
+  // char buf[output.length()+1];
+  // output.toCharArray(buf,output.length()+1);
+  //
+  // Serial.println(sizeof(buf));
+  // //root["d"]= encMsg(buf,sizeof(buf));
+  // root["d"]=output;
+  //
+  // root["i"]="this is an iv456";
+  // root["sg"]="na";
+  // String sId;
+  // (*confJ)["s"].printTo(sId);
+  // root["s"]=sId;
+  // //String ph;
+  // //String pl;
+  // //ph+=pl;
+  // root["r"] ="0";
+  // String payloadstr;
+  // root.printTo(payloadstr);
+  // char payload[payloadstr.length()];
+  // payloadstr.toCharArray(payload, payloadstr.length());
 
 }
 
