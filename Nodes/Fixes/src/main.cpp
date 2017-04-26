@@ -92,8 +92,8 @@ void handleConfig()
 
 	//while(true)
 	//{
-		//if(Serial.available() > 0)
-		//{
+		if(Serial.available() > 0)
+		{
         config = Serial.readStringUntil('\r');
         //break;
 			// char incomingChar = Serial.read();
@@ -116,8 +116,8 @@ void handleConfig()
 			// 		return;
 			// 	}
 			// }
-		//}
-	}
+		}
+	//}
   length = config.length();
 	writeEEPROMConfig((uint8_t*)&config[0],length);
 
