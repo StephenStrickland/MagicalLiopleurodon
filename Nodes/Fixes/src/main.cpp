@@ -32,3 +32,13 @@ void loop()
    // wait for a second
   delay(1000);
 }
+
+void handleConfig()
+{
+
+}
+
+void sendMessage()
+{
+  
+}
