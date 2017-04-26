@@ -135,6 +135,15 @@ void writeEEPROMConfig(uint8_t* json, uint16_t jsonDataSize)
 	EEPROM.put(0, configFile);
 }
 
+ConfigFile readEEPROMConfig()
+{
+	ConfigFile configFile;
+
+	EEPROM.get(0, configFile);
+
+	return configFile;
+}
+
 void loop()
 {
 	pinMode(CONFIG_TRIGGER_PIN, INPUT_PULLUP);
