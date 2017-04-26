@@ -19,7 +19,48 @@
 
 void handleConfig()
 {
+  int endingIndex = 1;
+  byte incomingByte = 0;
+  Serial.println("Entered configuration mode");
+  Serial.println("Waiting on config file...");
 
+  while(true)
+  {
+    if(Serial.available() > 0)
+    {
+      incomingByte = Serial.read();
+      //carriage return is the last char in the config stream, exit loop
+      if(incomingByte == '\r')
+      {
+        delay(50);
+        break;
+      }
+      else
+      {
+        //write the byte as a uint8_t to EEPROM
+        EEPROM.write(endingIndex, (uint8_t)incomingByte);
+        endingIndex++;
+      }
+    }
+  }
+
+  Serial.println("File ending acknowledged, writing to non-volatile memory");
+  Serial.println(endingIndex);
+  int remaining = (endingIndex + 1) - 255 > 0 ? (endingIndex + 1) - 255 : 0;
+  //write out the length to the first two bytes in EEPROM
+  EEPROM.write(0, remaining == 0 ? (endingIndex + 1) : 255);
+  EEPROM.write(1, remaining);
+
+  int configLength = EEPROM.read(0) + EEPROM.read(1);
+  for (int i = 0; i <configLength; i++)
+  {
+    // print out each char to serial, basically confirms the config file to the
+    // Base Station
+    Serial.print((char)EEPROM.read(i + 2));
+  }
+  Serial.print("\r\n");
+
+  Serial.println("complete");
 }
 
 void sendMessage()
@@ -29,7 +70,7 @@ void sendMessage()
 
 void sendATCommand()
 {
-  
+
 }
 
 
