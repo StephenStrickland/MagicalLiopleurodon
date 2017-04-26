@@ -39,7 +39,11 @@ void writeEEPROMConfig(uint8_t* json, uint16_t jsonDataSize)
 
 
   JsonArray& i = root["i"];
-  i.copyTo(config.i);
+  root["i"].printTo(Serial);
+  i.copyTo((char)config.i);
+  for (size_t i = 0; i < 24; i++) {
+    Serial.print(config.i[i]);
+  }
   JsonArray& ph = root["ph"];
   ph.copyTo(config.ph);
   JsonArray& pl = root["pl"];
@@ -90,12 +94,12 @@ void handleConfig()
 
 	String config;
 
-	//while(true)
-	//{
+	while(true)
+	{
 		if(Serial.available() > 0)
 		{
         config = Serial.readStringUntil('\r');
-        //break;
+        break;
 			// char incomingChar = Serial.read();
       // delay(1);
 			// //carriage return is the last char in the config stream, exit loop
@@ -117,7 +121,7 @@ void handleConfig()
 			// 	}
 			// }
 		}
-	//}
+	}
   length = config.length();
 	writeEEPROMConfig((uint8_t*)&config[0],length);
 
@@ -300,8 +304,10 @@ void setup()
     handleConfig();
   ConfigFile conf = readEEPROMConfig();
   Serial.println("config stuff");
-  Serial.println(*conf.i);
-  Serial.println(*conf.ph);
+  for (size_t i = 0; i < 20; i++) {
+    Serial.print(config.i[i]);
+    /* code */
+  }
 
 }
 
