@@ -25,31 +25,32 @@ uint16_t getConfigLength()
 
 void handleConfig()
 {
-  uint16_t endingIndex = 1;
+  uint16_t length = 0;
 
-  byte incomingByte = 0;
+  uint8_t incomingChar = 0;
   Serial.println("Entered configuration mode");
   Serial.println("Waiting on config file...");
+
+  uint8_t config[320];
 
   while(true)
   {
     if(Serial.available() > 0)
     {
-      incomingByte = Serial.read();
+      incomingChar = Serial.read();
       //carriage return is the last char in the config stream, exit loop
-      if(incomingByte == '\r')
+      if(incomingChar == '\r')
       {
-        delay(50);
         break;
       }
       else
       {
-        //write the byte as a uint8_t to EEPROM
-        EEPROM.write(endingIndex, (uint8_t)incomingByte);
-        endingIndex++;
+        //write the uint8_t to config to be passed into the deserialization handler
+        config[length] = incomingChar;
+        incomingChar++;
 
 				//make the max size of the code to be 0xffff in size.
-				if(endingIndex+1 > 0xFFFF)
+				if(length+1 > 0xFFFF)
 				{
 					Serial.println("Error! The config file is to large! Needs to be less than 65535 bytes.");
 					return;
@@ -59,22 +60,7 @@ void handleConfig()
   }
 
   Serial.println("File ending acknowledged, writing to non-volatile memory");
-  Serial.println(endingIndex);
-
-	EEPROM.put(0, (uint16_t)endingIndex+1);
-  //int remaining = (endingIndex + 1) - 255 > 0 ? (endingIndex + 1) - 255 : 0;
-  //write out the length to the first two bytes in EEPROM
-  //EEPROM.write(0, remaining == 0 ? (endingIndex + 1) : 255);
-  //EEPROM.write(1, remaining);
-
-  uint16_t length = getConfigLength();
-  for (int i = 0; i <length; i++)
-  {
-    // print out each char to serial, basically confirms the config file to the
-    // Base Station
-    Serial.print((char)EEPROM.read(i + 2));
-  }
-  Serial.print("\r\n");
+  Serial.println(length);
 
   Serial.println("complete");
 }
