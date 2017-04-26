@@ -14,6 +14,26 @@
 
 
 #define CONFIG_TRIGGER_PIN 5
+
+
+
+void handleConfig()
+{
+
+}
+
+void sendMessage()
+{
+
+}
+
+void sendATCommand()
+{
+  
+}
+
+
+
 void setup()
 {
   // initialize LED digital pin as an output.
@@ -23,17 +43,12 @@ void setup()
 void loop()
 {
   Serial.begin(9600);
-  pinMode(CONFIG_TRIGGER_PIN, LOW);
+  pinMode(CONFIG_TRIGGER_PIN, INPUT_PULLUP);
 
-  
-}
-
-void handleConfig()
-{
-
-}
-
-void sendMessage()
-{
+  //if this pin is low, trigger handleConfig()
+  if(digitalRead(CONFIG_TRIGGER_PIN) == LOW)
+  {
+    handleConfig();
+  }
 
 }
