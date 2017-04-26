@@ -60,8 +60,6 @@ void handleConfig()
 			{
 				//write the uint8_t to config to be passed into the deserialization handler
 				config[length++] = incomingChar;
-				incomingChar++;
-
 				//make the max size of the code to be 0xffff in size.
 				if(length+1 > 0xFFFF)
 				{
