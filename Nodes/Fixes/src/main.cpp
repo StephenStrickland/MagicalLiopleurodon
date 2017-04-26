@@ -15,12 +15,12 @@
  */
 typedef struct
 {
-	uint8_t i[24];
-	uint8_t ph[8];
-	uint8_t pl[8];
-	uint8_t nk[5][16];
+	char i[24];
+	char ph[8];
+	char pl[8];
+	char nk[5][16];
 	uint8_t ni;
-	uint8_t mk[5][16];
+	char mk[5][16];
 	uint8_t mi;
 	uint8_t np;
 	uint8_t mp;
@@ -90,12 +90,12 @@ void handleConfig()
 
 	String config;
 
-	//while(true)
-	//{
+	while(true)
+	{
 		if(Serial.available() > 0)
 		{
         config = Serial.readStringUntil('\r');
-        //break;
+				break;
 			// char incomingChar = Serial.read();
       // delay(1);
 			// //carriage return is the last char in the config stream, exit loop
@@ -117,7 +117,7 @@ void handleConfig()
 			// 	}
 			// }
 		}
-	//}
+	}
   length = config.length();
 	writeEEPROMConfig((uint8_t*)&config[0],length);
 
