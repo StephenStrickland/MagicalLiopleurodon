@@ -90,12 +90,12 @@ void handleConfig()
 
 	String config;
 
-	while(true)
-	{
+	//while(true)
+	//{
 		if(Serial.available() > 0)
 		{
         config = Serial.readStringUntil('\r');
-        break;
+        //break;
 			// char incomingChar = Serial.read();
       // delay(1);
 			// //carriage return is the last char in the config stream, exit loop
@@ -117,7 +117,7 @@ void handleConfig()
 			// 	}
 			// }
 		}
-	}
+	//}
   length = config.length();
 	writeEEPROMConfig((uint8_t*)&config[0],length);
 
