@@ -50,9 +50,12 @@ void handleConfig()
   //write out the length to the first two bytes in EEPROM
   EEPROM.write(0, remaining == 0 ? (endingIndex + 1) : 255);
   EEPROM.write(1, remaining);
-
-  int configLength = EEPROM.read(0) + EEPROM.read(1);
-  for (int i = 0; i <configLength; i++)
+  Serial.println("calculating length");
+  int configLength = 0;
+  configLength = (int)EEPROM.read(0) + (int)EEPROM.read(1);
+  Serial.println("bout to print");
+  Serial.println(configLength);
+  for (int i = 0; i < configLength; i++)
   {
     // print out each char to serial, basically confirms the config file to the
     // Base Station
@@ -89,6 +92,7 @@ void loop()
   //if this pin is low, trigger handleConfig()
   if(digitalRead(CONFIG_TRIGGER_PIN) == LOW)
   {
+    Serial.println("Handling Config");
     handleConfig();
   }
 
