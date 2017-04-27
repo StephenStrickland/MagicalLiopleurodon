@@ -3,27 +3,29 @@
 #include <ArduinoJson.h>
 #include <Printers.h>
 #include <XBee.h>
+#include "lio.hpp"
 
-#define CONFIG_TRIGGER_PIN 5
+#define CONFIG_TRIGGER_PIN 10
 
 /** Struct of the JSON config file
  *
  */
-typedef struct
-{
-	char i[27];
-	char ph[11];
-	char pl[11];
-	char nk[5][16];
-	uint8_t ni;
-	char mk[5][16];
-	uint8_t mi;
-	uint8_t np;
-	uint8_t mp;
-	uint8_t n;
-} ConfigFile;
+// typedef struct
+// {
+// 	char i[27];
+// 	char ph[11];
+// 	char pl[11];
+// 	char nk[5][16];
+// 	uint8_t ni;
+// 	char mk[5][16];
+// 	uint8_t mi;
+// 	uint8_t np;
+// 	uint8_t mp;
+// 	uint8_t n;
+// } ConfigFile;
 
 XBee xbee;
+Lio lio;
 
 
 ConfigFile config;
@@ -49,7 +51,6 @@ void writeEEPROMConfig(uint8_t* json, uint16_t jsonDataSize)
 	DynamicJsonBuffer jsonBuffer(jsonDataSize);
   printFreeRam();
 	JsonObject& root = jsonBuffer.parseObject(json);
-  printFreeRam();
   char temp[26];
   Serial.println("hello world");
   Serial.println(root.success());
@@ -75,9 +76,9 @@ void writeEEPROMConfig(uint8_t* json, uint16_t jsonDataSize)
 	// nk.copyTo(config.nk[1]);
 	// nk.copyTo(config.nk[2]);
 	// nk.copyTo(config.nk[3]);
-
+  //
 	// config.ni = root["ni"];
-
+  //
 	// JsonArray& mk = root["mk"];
 	// mk.copyTo(config.mk[0]);
 	// mk.copyTo(config.mk[1]);
@@ -118,7 +119,7 @@ void handleConfig()
 		}
 	}
   Serial.println(c);
-	writeEEPROMConfig((uint8_t*)&c, c.length());
+	writeEEPROMConfig((uint8_t*)&c[0], c.length());
 
 	Serial.println("File ending acknowledged, writing to non-volatile memory");
 	Serial.println(length);
@@ -204,8 +205,8 @@ void sendInt(int val)
   JsonArray& recipients = root.createNestedArray("r");
   recipients.add(0);
   root["t"] = 1;
-  uint8_t payload[root.measureLength()];
-  root.printTo((char*) payload, root.measureLength());
+  uint8_t payload[root.measureLength() + 1];
+  root.printTo((char*) payload, root.measureLength() + 1);
   XBeeAddress64 baseStationAddress = XBeeAddress64(0x0013a200, 0x4103dc72);
   Tx64Request req = Tx64Request(baseStationAddress, payload, sizeof(payload));
   xbee.send(req);
@@ -290,6 +291,10 @@ void configureXBee()
   uint8_t eeCmd[] = {'E', 'E'};
   //Turn on EE
   uint8_t eeVal[] = {1};
+  //Set MY, so that the radio will use 64bit address or SH + SL
+  uint8_t myCmd[] = {'M', 'Y'};
+  //Turn on EE
+  uint8_t myVal[] = {'F', 'F', 'F', 'F'};
   //Encryption Key
   uint8_t kyCmd[] = {'K', 'Y'};
   //Write commands to non-volatile memory
@@ -297,6 +302,13 @@ void configureXBee()
   //Default key, for now.
   uint8_t key[] = {'t', 'h', 'i', 's', ' ', 'i', 's', ' ', 'a', ' ', 'k', 'e', 'y', '1', '2', '3'};
   AtCommandRequest atRequest = AtCommandRequest();
+  //set MY key
+  Serial.println("sending MY");
+  atRequest.setCommand(myCmd);
+  atRequest.setCommandValue(myVal);
+  atRequest.setCommandValueLength(4);
+  sendAtCommand(atRequest);
+  atRequest.clearCommandValue();
   //turn on encryption
   Serial.println("sending EE");
   atRequest.setCommand(eeCmd);
@@ -348,21 +360,11 @@ void setup()
 
 	//init our serial setup
 	Serial.begin(9600);
-  delay(500);
-  Serial.println("spun up");
-  printFreeRam();
 
 	//if this pin is low, trigger handleConfig()
 	pinMode(CONFIG_TRIGGER_PIN, INPUT_PULLUP);
-  lioSetup(digitalRead(CONFIG_TRIGGER_PIN) == LOW);
-
-
-  Serial.println("config stuff");
-  Serial.println(sizeof(config.i));
-  Serial.println(config.i);
-  Serial.println(config.ph);
-  Serial.println(config.pl);
-  Serial.println(config.nk[0]);
+  lio.setup(digitalRead(CONFIG_TRIGGER_PIN) == LOW);
+  // lioSetup(digitalRead(CONFIG_TRIGGER_PIN) == LOW);
 
 }
 
@@ -373,7 +375,7 @@ void loop()
 {
   if(digitalRead(CONFIG_TRIGGER_PIN) == HIGH)
   {
-    sendInt(123);
+    lio.sendInt(123);
     delay(200);
   }
 }
