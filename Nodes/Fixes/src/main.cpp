@@ -15,9 +15,9 @@
  */
 typedef struct
 {
-	char i[24];
-	char ph[8];
-	char pl[8];
+	char i[27];
+	char ph[11];
+	char pl[11];
 	char nk[5][16];
 	uint8_t ni;
 	char mk[5][16];
@@ -29,6 +29,7 @@ typedef struct
 
 XBee xbee;
 
+
 ConfigFile config;
 
 void writeEEPROMConfig(uint8_t* json, uint16_t jsonDataSize)
@@ -36,31 +37,24 @@ void writeEEPROMConfig(uint8_t* json, uint16_t jsonDataSize)
 	DynamicJsonBuffer jsonBuffer(jsonDataSize);
 
 	JsonObject& root = jsonBuffer.parseObject(json);
-  char temp[24];
-  //the printTo includes wrapping quotes
-  root["i"].printTo((char*)temp, root["i"].measureLength() + 1);
-  for(int i = 0; i < 24; i++)
-  {
-    config.i[i] = temp[i + 1];
-  }
-  delete temp;
-  Serial.println(config.i);
-  Serial.println(config.i);
+  char temp[26];
+  Serial.println("hello world");
+  Serial.println(root.success());
+  root["i"].printTo(temp);
+  char * s = temp;
+  s++;
+  strcpy(config.i, s);
+  char t[10];
 
-  char t[8];
-  root["ph"].printTo((char*)t, root["ph"].measureLength() + 1);
-  for(int i = 0; i < 24; i++)
-  {
-    config.ph[i] = t[i + 1];
-  }
-  Serial.println(config.i);
-  char b[8];
-  root["pl"].printTo((char*)b, root["pl"].measureLength() + 1);
-  for(int i = 0; i < 24; i++)
-  {
-    config.pl[i] = b[i + 1];
-  }
-  Serial.println(config.i);
+  root["ph"].printTo(t, 10);
+  s = t;
+  s++;
+  strcpy(config.ph, s);
+  root["pl"].printTo(t, 10);
+  s = t;
+  s++;
+  strcpy(config.pl, s);
+
 
 
 	JsonArray& nk = root["nk"];
@@ -88,13 +82,9 @@ void writeEEPROMConfig(uint8_t* json, uint16_t jsonDataSize)
   Serial.println(config.i);
 }
 
-ConfigFile readEEPROMConfig()
+void readEEPROMConfig()
 {
-	ConfigFile configFile;
-
-	EEPROM.get(0, configFile);
-
-	return configFile;
+	EEPROM.get(0, config);
 }
 
 void handleConfig()
@@ -112,26 +102,6 @@ void handleConfig()
 		{
         c = Serial.readStringUntil('\r');
 				break;
-			// char incomingChar = Serial.read();
-      // delay(1);
-			// //carriage return is the last char in the config stream, exit loop
-			// if(incomingChar == '\r')
-			// 	break;
-			// else
-			// {
-      //   Serial.println("got it");
-			// 	//write the uint8_t to config to be passed into the deserialization handler
-			// 	config += incomingChar;
-      //   length++;
-      //   delay(10);
-      //   Serial.println(incomingChar);
-			// 	//make the max size of the code to be 0xffff in size.
-			// 	if(length+1 > 0xFFFF)
-			// 	{
-			// 		Serial.println("Error! The config file is to large! Needs to be less than 65535 bytes.");
-			// 		return;
-			// 	}
-			// }
 		}
 	}
   length = c.length();
@@ -144,9 +114,18 @@ void handleConfig()
 	Serial.println("complete");
 }
 
+
+/**
+ * The only way that this can work is if we first
+ * serialize message then add that as a nested object to root
+ * @param message [description]
+ * @param length  [description]
+ */
 void sendMessage(uint8_t message[], int length)
 {
-  // char msgCpy[length];
+
+
+    // char msgCpy[length];
   //   for(int i=0;i<length;i++)
   //   {
   //     msgCpy[i]=message[i];
@@ -199,107 +178,151 @@ void sendMessage(uint8_t message[], int length)
 
 }
 
-/** sends AT Command to XBee radio
- *
+/**
+ * Send an integer to the Base Station
+ * @param val The integer to send
  */
-// void sendAtCommand(AtCommandRequest req)
-// {
-// 	Serial.println("Sending command to the XBee");
-// 	AtCommandResponse atResponse = AtCommandResponse();
-// 	// send the command
-// 	xbee.send(req);
-//
-// 	// wait up to 5 seconds for the status response
-// 	if(xbee.readPacket(5000))
-// 	{
-// 		// got a response!
-//
-// 		// should be an AT command response
-// 		if(xbee.getResponse().getApiId() == AT_COMMAND_RESPONSE)
-// 		{
-// 			xbee.getResponse().getAtCommandResponse(atResponse);
-//
-// 			if(atResponse.isOk())
-// 			{
-// 				Serial.print("Command [");
-// 				Serial.print(atResponse.getCommand()[0]);
-// 				Serial.print(atResponse.getCommand()[1]);
-// 				Serial.println("] was successful!");
-//
-// 				if(atResponse.getValueLength() > 0)
-// 				{
-// 					Serial.print("Command value length is ");
-// 					Serial.println(atResponse.getValueLength(), DEC);
-//
-// 					Serial.print("Command value: ");
-//
-// 					for(int i = 0; i < atResponse.getValueLength(); i++)
-// 					{
-// 						Serial.print(atResponse.getValue()[i], HEX);
-// 						Serial.print(" ");
-// 					}
-//
-// 					Serial.println("");
-// 				}
-// 			}
-// 			else
-// 			{
-// 				Serial.print("Command return error code: ");
-// 				Serial.println(atResponse.getStatus(), HEX);
-// 			}
-// 		}
-// 		else
-// 		{
-// 			Serial.print("Expected AT response but got ");
-// 			Serial.print(xbee.getResponse().getApiId(), HEX);
-// 		}
-// 	}
-// 	else
-// 	{
-// 		// at command failed
-// 		if(xbee.getResponse().isError())
-// 		{
-// 			Serial.print("Error reading packet.  Error code: ");
-// 			Serial.println(xbee.getResponse().getErrorCode());
-// 		}
-// 		else
-// 			Serial.print("No response from radio");
-// 	}
-// }
-//
-// /** configures XBee radio
-//  * sets up radio level encryption
-//  */
-// void configureXBee()
-// {
-//   //Encryption Enable
-//   uint8_t eeCmd[] = {'E', 'E'};
-//   //Turn on EE
-//   uint8_t eeVal[] = {1};
-//   //Encryption Key
-//   uint8_t kyCmd[] = {'K', 'Y'};
-//   //Write commands to non-volatile memory
-//   uint8_t wrCmd[] = {'W', 'R'};
-//   //Default key, for now.
-//   uint8_t key[] = {'t', 'h', 'i', 's', ' ', 'i', 's', ' ', 'a', ' ', 'k', 'e', 'y', '1', '2', '3'};
-//   AtCommandRequest atRequest = AtCommandRequest();
-//   //turn on encryption
-//   atRequest.setCommand(eeCmd);
-//   atRequest.setCommandValue(eeVal);
-//   atRequest.setCommandValueLength(1);
-//   sendAtCommand(atRequest);
-//   //set encryption key
-//   atRequest.clearCommandValue();
-//   atRequest.setCommand(kyCmd);
-//   atRequest.setCommandValue(key);
-//   atRequest.setCommandValueLength(16);
-//   sendAtCommand(atRequest);
-//   atRequest.clearCommandValue();
-//   //tell xbee to write vals to non-volatile memory
-//   atRequest.setCommand(wrCmd);
-//   sendAtCommand(atRequest);
-// }
+void sendInt(int val)
+{
+  StaticJsonBuffer<200> jsonBuffer;
+  JsonObject& root = jsonBuffer.createObject();
+  JsonObject&  data = root.createNestedObject("d");
+  data["v"] = val;
+  JsonArray& recipients = root.createNestedArray("r");
+  recipients.add(0);
+  root["t"] = 1;
+  uint8_t payload[root.measureLength()];
+  root.printTo((char*) payload, root.measureLength());
+  XBeeAddress64 baseStationAddress = XBeeAddress64(0x0013a200, 0x4103dc72);
+  Tx64Request req = Tx64Request(baseStationAddress, payload, sizeof(payload));
+  xbee.send(req);
+}
 
+/**
+ * Sends the specified request to the xbee radio
+ * @param req : the request to send
+ */
+void sendAtCommand(AtCommandRequest req)
+{
+	Serial.println("Sending command to the XBee");
+	AtCommandResponse atResponse = AtCommandResponse();
+	// send the command
+	xbee.send(req);
+
+	// wait up to 5 seconds for the status response
+	if(xbee.readPacket(5000))
+	{
+		// got a response!
+
+		// should be an AT command response
+		if(xbee.getResponse().getApiId() == AT_COMMAND_RESPONSE)
+		{
+			xbee.getResponse().getAtCommandResponse(atResponse);
+
+			if(atResponse.isOk())
+			{
+				Serial.print("Command [");
+				Serial.print(atResponse.getCommand()[0]);
+				Serial.print(atResponse.getCommand()[1]);
+				Serial.println("] was successful!");
+
+				if(atResponse.getValueLength() > 0)
+				{
+					Serial.print("Command value length is ");
+					Serial.println(atResponse.getValueLength(), DEC);
+
+					Serial.print("Command value: ");
+
+					for(int i = 0; i < atResponse.getValueLength(); i++)
+					{
+						Serial.print(atResponse.getValue()[i], HEX);
+						Serial.print(" ");
+					}
+
+					Serial.println("");
+				}
+			}
+			else
+			{
+				Serial.print("Command return error code: ");
+				Serial.println(atResponse.getStatus(), HEX);
+			}
+		}
+		else
+		{
+			Serial.print("Expected AT response but got ");
+			Serial.print(xbee.getResponse().getApiId(), HEX);
+		}
+	}
+	else
+	{
+		// at command failed
+		if(xbee.getResponse().isError())
+		{
+			Serial.print("Error reading packet.  Error code: ");
+			Serial.println(xbee.getResponse().getErrorCode());
+		}
+		else
+			Serial.print("No response from radio");
+	}
+}
+
+/** configures XBee radio
+ * sets up radio level encryption
+ */
+void configureXBee()
+{
+  xbee.setSerial(Serial);
+  //Encryption Enable
+  uint8_t eeCmd[] = {'E', 'E'};
+  //Turn on EE
+  uint8_t eeVal[] = {1};
+  //Encryption Key
+  uint8_t kyCmd[] = {'K', 'Y'};
+  //Write commands to non-volatile memory
+  uint8_t wrCmd[] = {'W', 'R'};
+  //Default key, for now.
+  uint8_t key[] = {'t', 'h', 'i', 's', ' ', 'i', 's', ' ', 'a', ' ', 'k', 'e', 'y', '1', '2', '3'};
+  AtCommandRequest atRequest = AtCommandRequest();
+  //turn on encryption
+  Serial.println("sending EE");
+  atRequest.setCommand(eeCmd);
+  atRequest.setCommandValue(eeVal);
+  atRequest.setCommandValueLength(1);
+  sendAtCommand(atRequest);
+  //set encryption key
+  atRequest.clearCommandValue();
+  Serial.println("sending KY");
+  atRequest.setCommand(kyCmd);
+  atRequest.setCommandValue(key);
+  atRequest.setCommandValueLength(16);
+  sendAtCommand(atRequest);
+  atRequest.clearCommandValue();
+  //tell xbee to write vals to non-volatile memory
+  //Serial.println("sending WR");
+  atRequest.setCommand(wrCmd);
+  sendAtCommand(atRequest);
+}
+
+/**
+ * Sets up the library
+ * @param triggerConfig if true, reads config from Serial
+ */
+void lioSetup(bool triggerConfig)
+{
+  if(triggerConfig)
+    handleConfig();
+  else
+  {
+    readEEPROMConfig();
+
+    configureXBee();
+  }
+}
+
+/**
+ * Arduini setup func
+ */
 void setup()
 {
 	// initialize LED digital pin as an output.
@@ -309,26 +332,28 @@ void setup()
 	Serial.begin(9600);
   delay(500);
   Serial.println("spun up");
-
 	//if this pin is low, trigger handleConfig()
 	pinMode(CONFIG_TRIGGER_PIN, INPUT_PULLUP);
-  Serial.println(digitalRead(CONFIG_TRIGGER_PIN) == LOW);
-  if(digitalRead(CONFIG_TRIGGER_PIN) == LOW)
-    handleConfig();
+  lioSetup(digitalRead(CONFIG_TRIGGER_PIN) == LOW);
+
+
   Serial.println("config stuff");
   Serial.println(sizeof(config.i));
   Serial.println(config.i);
   Serial.println(config.ph);
   Serial.println(config.pl);
-  Serial.println(config.i[0]);
-  Serial.println(config.i[23]);
   Serial.println(config.nk[0]);
 
 }
 
+/**
+ * data loop here
+ */
 void loop()
 {
-
-
-    // Serial.println("spun up");
+  if(digitalRead(CONFIG_TRIGGER_PIN) == HIGH)
+  {
+    sendInt(123);
+    delay(200);
+  }
 }
