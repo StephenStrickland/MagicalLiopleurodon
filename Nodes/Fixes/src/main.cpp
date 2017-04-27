@@ -4,10 +4,6 @@
 #include <Printers.h>
 #include <XBee.h>
 
-#ifndef LED_BUILTIN
-#define LED_BUILTIN 13
-#endif
-
 #define CONFIG_TRIGGER_PIN 5
 
 /** Struct of the JSON config file
@@ -32,11 +28,28 @@ XBee xbee;
 
 ConfigFile config;
 
+int freeRam ()
+{
+  extern int __heap_start, *__brkval;
+  int v;
+  return (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
+}
+
+void printFreeRam()
+{
+  Serial.print("free ram: ");
+  Serial.print(freeRam());
+  Serial.println("");
+}
+
+
 void writeEEPROMConfig(uint8_t* json, uint16_t jsonDataSize)
 {
+  printFreeRam();
 	DynamicJsonBuffer jsonBuffer(jsonDataSize);
-
+  printFreeRam();
 	JsonObject& root = jsonBuffer.parseObject(json);
+  printFreeRam();
   char temp[26];
   Serial.println("hello world");
   Serial.println(root.success());
@@ -54,28 +67,28 @@ void writeEEPROMConfig(uint8_t* json, uint16_t jsonDataSize)
   s = t;
   s++;
   strcpy(config.pl, s);
-
+  delete s;
 
 
 	JsonArray& nk = root["nk"];
 	nk.copyTo(config.nk[0]);
-	nk.copyTo(config.nk[1]);
-	nk.copyTo(config.nk[2]);
-	nk.copyTo(config.nk[3]);
+	// nk.copyTo(config.nk[1]);
+	// nk.copyTo(config.nk[2]);
+	// nk.copyTo(config.nk[3]);
 
-	config.ni = root["ni"];
+	// config.ni = root["ni"];
 
-	JsonArray& mk = root["mk"];
-	mk.copyTo(config.mk[0]);
-	mk.copyTo(config.mk[1]);
-	mk.copyTo(config.mk[2]);
-	mk.copyTo(config.mk[3]);
-
-	config.mi = root["mi"];
-	config.np = root["np"];
-	config.mp = root["mp"];
-	config.n = root["n"];
-  Serial.println(config.i);
+	// JsonArray& mk = root["mk"];
+	// mk.copyTo(config.mk[0]);
+	// mk.copyTo(config.mk[1]);
+	// mk.copyTo(config.mk[2]);
+	// mk.copyTo(config.mk[3]);
+  //
+	// config.mi = root["mi"];
+	// config.np = root["np"];
+	// config.mp = root["mp"];
+	// config.n = root["n"];
+  // Serial.println(config.i);
 
 	//write the EEPROM data.
 	EEPROM.put(0, config);
@@ -104,8 +117,8 @@ void handleConfig()
 				break;
 		}
 	}
-  length = c.length();
-	writeEEPROMConfig((uint8_t*)&c[0],length);
+  Serial.println(c);
+	writeEEPROMConfig((uint8_t*)&c, c.length());
 
 	Serial.println("File ending acknowledged, writing to non-volatile memory");
 	Serial.println(length);
@@ -320,11 +333,16 @@ void lioSetup(bool triggerConfig)
   }
 }
 
+
+
+
+
 /**
  * Arduini setup func
  */
 void setup()
 {
+
 	// initialize LED digital pin as an output.
 	pinMode(LED_BUILTIN, OUTPUT);
 
@@ -332,6 +350,8 @@ void setup()
 	Serial.begin(9600);
   delay(500);
   Serial.println("spun up");
+  printFreeRam();
+
 	//if this pin is low, trigger handleConfig()
 	pinMode(CONFIG_TRIGGER_PIN, INPUT_PULLUP);
   lioSetup(digitalRead(CONFIG_TRIGGER_PIN) == LOW);
